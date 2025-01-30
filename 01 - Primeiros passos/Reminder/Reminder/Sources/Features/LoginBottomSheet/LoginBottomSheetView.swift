@@ -1,6 +1,10 @@
 import UIKit
 
 class LoginBottomSheetView: UIView {
+    // MARK: - Delegate(s).
+    public weak var delegate: LoginBottomSheetViewDelegate?
+    
+    // MARK: - Private Property(ies).
     
     private let titleLabel: UILabel = {
         let label = UILabel()
@@ -30,6 +34,8 @@ class LoginBottomSheetView: UIView {
         text.placeholder = "login.email.placeholder".localized
         text.borderStyle = .roundedRect
         text.translatesAutoresizingMaskIntoConstraints = false
+        text.keyboardType = .emailAddress
+        text.autocapitalizationType = .none
         return text
     }()
     
@@ -59,6 +65,7 @@ class LoginBottomSheetView: UIView {
         button.tintColor = .white
         button.clipsToBounds = true
         button.titleLabel?.font = Typography.subHeading
+        button.addTarget(self, action: #selector(loginButtonDidTapped), for: .touchUpInside)
         return button
     }()
     
@@ -119,4 +126,14 @@ class LoginBottomSheetView: UIView {
             loginButton.heightAnchor.constraint(equalToConstant: Metrics.buttonSize)
         ])
     }
+    
+    @objc
+    private func loginButtonDidTapped() {
+        let user = emailTextField.text ?? ""
+        let password = passwordTextField.text ?? ""
+        
+        delegate?.sendLoginData(user: user, password: password)
+    }
 }
+
+
