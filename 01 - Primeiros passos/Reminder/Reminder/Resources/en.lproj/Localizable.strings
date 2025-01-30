@@ -1,0 +1,16 @@
+/* MARK: - LOGIN Screen */
+
+"login.label.title" = "Entre para acessar suas receitas";
+"login.loginText.label.title" = "E-mail";
+"login.email.placeholder" = "email@exemplo.com";
+"login.passwordText.label.title" = "Senha";
+"login.password.placeholder" = "*******";
+"login.button.title" = "Entrar";
+
+/* MARK: - HOME Screen */
+
+
+/* MARK: - Receipts Screen */
+
+
+/* MARK: - NewReceipt Screen */
