@@ -11,6 +11,7 @@ class LoginBottomSheetViewController: UIViewController {
         setupUI()
         handlePanGesture()
         setupGesture()
+        bindViewModel()
         loginView.delegate = self
     }
     
@@ -30,6 +31,8 @@ class LoginBottomSheetViewController: UIViewController {
         let heightConstraint = loginView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.5).isActive = true
     }
     
+    //MARK: - Private Function(s).
+    
     private func setupGesture() {
         
     }
@@ -38,7 +41,7 @@ class LoginBottomSheetViewController: UIViewController {
         
     }
     
-    //MARK: - Internal Function(s)
+    //MARK: - Internal Function(s).
     
     func animateShow(completion: (() -> Void)? = nil) {
         self.view.layoutIfNeeded()
@@ -48,6 +51,12 @@ class LoginBottomSheetViewController: UIViewController {
             self.view.layoutIfNeeded()
         }) { _ in
             completion?()
+        }
+    }
+    
+    func bindViewModel() {
+        viewModel.successResult = { [weak self] in
+            print("chegou no viewController")
         }
     }
 }
