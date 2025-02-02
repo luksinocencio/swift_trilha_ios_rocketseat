@@ -6,6 +6,17 @@ class LoginBottomSheetViewController: UIViewController {
     
     var handleAreaHeight: CGFloat = 50.0
     
+    public weak var flowDelegate: LoginBottomSheetFlowDelegate?
+    
+    init(flowDelegate: LoginBottomSheetFlowDelegate) {
+        self.flowDelegate = flowDelegate
+        super.init(nibName: nil, bundle: nil)
+    }
+        
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
@@ -56,7 +67,7 @@ class LoginBottomSheetViewController: UIViewController {
     
     func bindViewModel() {
         viewModel.successResult = { [weak self] in
-            print("chegou no viewController")
+            self?.flowDelegate?.navigateToHome()
         }
     }
 }
