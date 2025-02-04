@@ -18,7 +18,6 @@ class ReminderFlowController {
     // MARK: - Splash.
     
     // MARK: - startFlow
-    
     func start() -> UINavigationController? {
         let startViewController = viewControllerFactory.makeSplashViewController(flowDelegate: self)
         self.navigationController = UINavigationController(rootViewController: startViewController)
@@ -28,8 +27,8 @@ class ReminderFlowController {
 
 // MARK: - Extension(s).
 
-/// - Splash
-extension ReminderFlowController: SplashViewFlowDelegate {
+//MARK: - Splash
+extension ReminderFlowController: SplashFlowDelegate {
     func openLoginBottomSheet() {
         let loginBottomSheet = viewControllerFactory.makeLoginBottomSheetViewController(flowDelegate: self)
         loginBottomSheet.modalPresentationStyle = .overCurrentContext
@@ -39,17 +38,23 @@ extension ReminderFlowController: SplashViewFlowDelegate {
         }
         
         func navigateToHome() {
-            
+            self.navigationController?.dismiss(animated: false)
+            let viewController = viewControllerFactory.makeHomeViewController(flowDelegate: self)
+            self.navigationController?.pushViewController(viewController, animated: true)
         }
     }
 }
 
-/// - Login
+//MARK: - Login
 extension ReminderFlowController: LoginBottomSheetFlowDelegate {
     func navigateToHome() {
         self.navigationController?.dismiss(animated: true)
-        let viewController = UIViewController()
-        viewController.view.backgroundColor = .systemBlue
+        let viewController = viewControllerFactory.makeHomeViewController(flowDelegate: self)
         self.navigationController?.pushViewController(viewController, animated: false)
     }
+}
+
+//MARK: - Login
+extension ReminderFlowController: HomeFlowDelegate {
+    
 }

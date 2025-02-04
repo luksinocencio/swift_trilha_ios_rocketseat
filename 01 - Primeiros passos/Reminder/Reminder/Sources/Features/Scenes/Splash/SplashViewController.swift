@@ -2,9 +2,9 @@ import UIKit
 
 class SplashViewController: UIViewController {
     let contentView: SplashView
-    public weak var flowDelegate: SplashViewFlowDelegate?
+    public weak var flowDelegate: SplashFlowDelegate?
     
-    init(contentView: SplashView, flowDelegate: SplashViewFlowDelegate? = nil) {
+    init(contentView: SplashView, flowDelegate: SplashFlowDelegate? = nil) {
         self.contentView = contentView
         self.flowDelegate = flowDelegate
         super.init(nibName: nil, bundle: nil)
@@ -30,14 +30,7 @@ class SplashViewController: UIViewController {
     }
     
     private func setupConstraints() {
-        NSLayoutConstraint.activate([
-            contentView.topAnchor.constraint(equalTo: view.topAnchor),
-            contentView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            contentView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            contentView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-        ])
-        
-        contentView.translatesAutoresizingMaskIntoConstraints = false
+        setupContentViewToBounds(contentView: contentView)
     }
     
     private func decideNavigationFlow() {

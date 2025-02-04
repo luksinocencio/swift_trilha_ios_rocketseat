@@ -1,7 +1,7 @@
 import UIKit
 
 final class ViewControllersFactory: ViewControllersFactoryProtocol {
-    func makeSplashViewController(flowDelegate: SplashViewFlowDelegate) -> SplashViewController {
+    func makeSplashViewController(flowDelegate: SplashFlowDelegate) -> SplashViewController {
         let viewContent = SplashView()
         let viewController = SplashViewController(
             contentView: viewContent,
@@ -13,6 +13,15 @@ final class ViewControllersFactory: ViewControllersFactoryProtocol {
     func makeLoginBottomSheetViewController(flowDelegate: LoginBottomSheetFlowDelegate) -> LoginBottomSheetViewController {
         let viewContent = LoginBottomSheetView()
         let viewController = LoginBottomSheetViewController(
+            contentView: viewContent,
+            flowDelegate: flowDelegate
+        )
+        return viewController
+    }
+    
+    func makeHomeViewController(flowDelegate: HomeFlowDelegate) -> HomeViewController {
+        let viewContent = HomeView()
+        let viewController = HomeViewController(
             contentView: viewContent,
             flowDelegate: flowDelegate
         )
