@@ -2,7 +2,7 @@ import UIKit
 
 class SplashView: UIView {
     
-    private let logoImageView: UIImageView = {
+    let logoImageView: UIImageView = {
         let image = UIImageView()
         image.image = UIImage(named: "logo")
         image.contentMode = .scaleAspectFit
@@ -18,6 +18,8 @@ class SplashView: UIView {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    // NARK: - Private function(s).
     
     private func setupUI() {
         self.backgroundColor = Colors.primaryRedBase

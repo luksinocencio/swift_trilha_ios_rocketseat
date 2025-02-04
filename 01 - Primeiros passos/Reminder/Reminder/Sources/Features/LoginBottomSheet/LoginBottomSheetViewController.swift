@@ -16,7 +16,7 @@ class LoginBottomSheetViewController: UIViewController {
         self.contentView = contentView
         super.init(nibName: nil, bundle: nil)
     }
-        
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -56,6 +56,31 @@ class LoginBottomSheetViewController: UIViewController {
         
     }
     
+    private func presentSaveLoginAlert(email: String) {
+        let alertController = UIAlertController(title: "Salvar Acesso", message: "Deseja salvar seu acesso?", preferredStyle: .alert)
+        
+        let saveAction = UIAlertAction(title: "Salvar", style: .default) { _ in
+            let user = User(email: email, isUserSaved: true)
+            UserDefaultsManager.saveUser(user: user)
+            self.flowDelegate?.navigateToHome()
+        }
+        
+        let cancelAction = UIAlertAction(title: "Não", style: .cancel) { _ in
+            self.flowDelegate?.navigateToHome()
+        }
+        
+        alertController.addAction(saveAction)
+        alertController.addAction(cancelAction)
+        self.present(alertController, animated: true)
+    }
+    
+    private func presentErrorAlert(message: String) {
+        let alertController = UIAlertController(title: "Erro ao logar", message: message, preferredStyle: .alert)
+        let retryAction = UIAlertAction(title: "Tentar novamente", style: .default)
+        alertController.addAction(retryAction)
+        self.present(alertController, animated: true)
+    }
+    
     //MARK: - Internal Function(s).
     
     func animateShow(completion: (() -> Void)? = nil) {
@@ -70,8 +95,12 @@ class LoginBottomSheetViewController: UIViewController {
     }
     
     func bindViewModel() {
-        viewModel.successResult = { [weak self] in
-            self?.flowDelegate?.navigateToHome()
+        viewModel.successResult = { [weak self] usernameLogin in
+            self?.presentSaveLoginAlert(email: usernameLogin)
+        }
+        
+        viewModel.errorResult = { [weak self] errorMessage in
+            self?.presentErrorAlert(message: errorMessage)
         }
     }
 }

@@ -2,7 +2,11 @@ import UIKit
 
 final class ViewControllersFactory: ViewControllersFactoryProtocol {
     func makeSplashViewController(flowDelegate: SplashViewFlowDelegate) -> SplashViewController {
-        let viewController = SplashViewController(flowDelegate: flowDelegate)
+        let viewContent = SplashView()
+        let viewController = SplashViewController(
+            contentView: viewContent,
+            flowDelegate: flowDelegate
+        )
         return viewController
     }
     
