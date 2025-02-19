@@ -38,6 +38,7 @@ class ButtonHomeView: UIView {
         let imageView = UIImageView()
         imageView.image = UIImage(systemName: "chevron.right")
         imageView.contentMode = .scaleAspectFit
+        imageView.tintColor = Colors.gray500
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
@@ -45,12 +46,15 @@ class ButtonHomeView: UIView {
     init(icon: UIImage?, title: String, description: String) {
         super.init(frame: .zero)
         
+        backgroundColor = Colors.gray700
+        layer.cornerRadius = 10
+        translatesAutoresizingMaskIntoConstraints = false
+        
         self.iconImageView.image = icon
         self.titleLabel.text = title
         self.descriptionLabel.text = description
         
         setupUI()
-        setupSelfClass()
     }
     
     required init?(coder: NSCoder) {
@@ -76,24 +80,20 @@ class ButtonHomeView: UIView {
             iconImageView.heightAnchor.constraint(equalToConstant: 48),
             
             titleLabel.topAnchor.constraint(equalTo: topAnchor, constant: Metrics.medium),
-            titleLabel.leadingAnchor.constraint(equalTo: iconView.leadingAnchor, constant: Metrics.medier),
-            titleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -Metrics.medier),
+            titleLabel.leadingAnchor.constraint(equalTo: iconView.trailingAnchor, constant: Metrics.medier),
+            titleLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: Metrics.medier),
             
-            descriptionLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: Metrics.medium),
+            descriptionLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: Metrics.little),
             descriptionLabel.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor),
-            descriptionLabel.trailingAnchor.constraint(equalTo: titleLabel.trailingAnchor),
-            descriptionLabel.bottomAnchor.constraint(lessThanOrEqualTo: bottomAnchor, constant: -Metrics.medier),
+            descriptionLabel.trailingAnchor.constraint(equalTo: trailingAnchor),
+            descriptionLabel.bottomAnchor.constraint(lessThanOrEqualTo: bottomAnchor, constant: Metrics.medier),
             
             arrowImageView.centerYAnchor.constraint(equalTo: titleLabel.centerYAnchor),
-            arrowImageView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: Metrics.medier),
+            arrowImageView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -Metrics.medier),
             arrowImageView.widthAnchor.constraint(equalToConstant: 16),
             arrowImageView.heightAnchor.constraint(equalToConstant: 16),
         ])
     }
     
-    private func setupSelfClass() {
-        backgroundColor = Colors.gray700
-        layer.cornerRadius = 10
-        translatesAutoresizingMaskIntoConstraints = false
-    }
+    
 }
