@@ -6,6 +6,7 @@ public struct Metrics {
     public static var large: CGFloat = 32
     public static var medium: CGFloat = 24
     public static var small: CGFloat = 12
+    public static var medier: CGFloat = 16
     public static var little: CGFloat = 8
     public static var tiny: CGFloat = 4
     public static var buttonSize: CGFloat = 56
