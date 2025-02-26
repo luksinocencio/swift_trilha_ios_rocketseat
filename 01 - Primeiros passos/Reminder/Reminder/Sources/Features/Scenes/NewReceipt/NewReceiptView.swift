@@ -43,8 +43,23 @@ class NewReceiptView: UIView {
         return button
     }()
     
+    let remedyInput = Input(title: "Rémedio", placeholder: "Nome do medicamento")
+    let timeInput = Input(title: "Horário", placeholder: "12:00")
+    let recurrenceInput = Input(title: "Recorrência", placeholder: "Selecione")
+    let takeNowCheckbox = CheckBox(title: "Tomar agora")
+    
+    let stackForm: UIStackView = {
+        let stack = UIStackView()
+        stack.axis = .vertical
+        stack.spacing = Metrics.small
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        
+        return stack
+    }()
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
+        setupView()
     }
     
     required init?(coder: NSCoder) {
@@ -55,6 +70,14 @@ class NewReceiptView: UIView {
         addSubview(backButton)
         addSubview(titleLabel)
         addSubview(descriptionLabel)
+        addSubview(stackForm)
+        
+        stackForm.addArrangedSubview(remedyInput)
+        stackForm.addArrangedSubview(timeInput)
+        stackForm.addArrangedSubview(recurrenceInput)
+        stackForm.setCustomSpacing(48, after: recurrenceInput)
+        stackForm.addArrangedSubview(takeNowCheckbox)
+        
         addSubview(addButton)
         
         setupConstraints()
@@ -73,6 +96,10 @@ class NewReceiptView: UIView {
             descriptionLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: Metrics.small),
             descriptionLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: Metrics.large),
             descriptionLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -Metrics.large),
+            
+            stackForm.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor, constant: Metrics.small),
+            stackForm.leadingAnchor.constraint(equalTo: descriptionLabel.leadingAnchor),
+            stackForm.trailingAnchor.constraint(equalTo: descriptionLabel.trailingAnchor),
             
             addButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: Metrics.large),
             addButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -Metrics.large),

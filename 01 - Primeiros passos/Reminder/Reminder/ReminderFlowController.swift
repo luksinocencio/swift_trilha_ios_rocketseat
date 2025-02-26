@@ -15,11 +15,10 @@ class ReminderFlowController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    // MARK: - Splash.
-    
     // MARK: - startFlow
     func start() -> UINavigationController? {
-        let startViewController = viewControllerFactory.makeSplashViewController(flowDelegate: self)
+//        let startViewController = viewControllerFactory.makeSplashViewController(flowDelegate: self)
+        let startViewController = NewReceiptViewController()
         self.navigationController = UINavigationController(rootViewController: startViewController)
         return navigationController
     }
