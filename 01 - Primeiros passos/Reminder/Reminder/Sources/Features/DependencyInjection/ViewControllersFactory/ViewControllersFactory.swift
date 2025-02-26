@@ -27,4 +27,9 @@ final class ViewControllersFactory: ViewControllersFactoryProtocol {
         )
         return viewController
     }
+    
+    func makeRecipesViewController() -> NewReceiptViewController {
+        let viewController = NewReceiptViewController()
+        return viewController
+    }
 }

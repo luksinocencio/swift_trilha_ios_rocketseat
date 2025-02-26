@@ -12,6 +12,7 @@ class NewReceiptViewController: UIViewController {
         view.backgroundColor = Colors.gray800
         view.addSubview(newReceiptView)
         setupConstraints()
+        setupActions()
     }
     
     private func setupConstraints() {
@@ -20,6 +21,11 @@ class NewReceiptViewController: UIViewController {
     }
     
     private func setupActions() {
-        
+        newReceiptView.backButton.addTarget(self, action: #selector(backButtonTapped), for: .touchUpInside)
+    }
+    
+    @objc
+    private func backButtonTapped() {
+        self.navigationController?.popViewController(animated: true)
     }
 }

@@ -36,6 +36,7 @@ class HomeViewController: UIViewController {
         self.view.backgroundColor = Colors.gray600
         contentView.delegate = self
         buildHierarchy()
+        setupActionForNewRecipe()
     }
     
     private func buildHierarchy() {
@@ -52,6 +53,14 @@ class HomeViewController: UIViewController {
         }
     }
     
+    private func setupActionForNewRecipe() {
+        contentView.newPrescriptionButton.tapAction = { [weak self] in
+            self?.didTapNewPrescriptionButton()
+        }
+    }
+    
+    
+    
     @objc
     private func logoutAction() {
         UserDefaultsManager.removeUser()
@@ -62,6 +71,10 @@ class HomeViewController: UIViewController {
 extension HomeViewController: HomeViewDelegate {
     func didTapProfileImage() {
         selectProfileImage()
+    }
+    
+    private func didTapNewPrescriptionButton() {
+        flowDelegate.navigateToRecipes()
     }
 }
 
