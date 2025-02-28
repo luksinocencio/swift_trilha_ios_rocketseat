@@ -9,7 +9,7 @@ public class Input: UIView {
         return label
     }()
     
-    private let textField: UITextField =  {
+    let textField: UITextField =  {
         let textField = UITextField()
         textField.font = Typography.input
         textField.textColor = Colors.gray100
