@@ -10,7 +10,7 @@ class CheckBox: UIView {
     }()
     
     let checkbox: UIButton = {
-        let button = UIButton()
+        let button = UIButton(type: .system)
         button.setImage(UIImage(systemName: "square"), for: .normal)
         button.tintColor = Colors.gray400
         button.translatesAutoresizingMaskIntoConstraints = false

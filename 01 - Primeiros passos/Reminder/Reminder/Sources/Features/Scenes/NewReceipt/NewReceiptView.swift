@@ -81,6 +81,7 @@ class NewReceiptView: UIView {
         
         return stack
     }()
+    // MARK: - init function(s).
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -110,6 +111,8 @@ class NewReceiptView: UIView {
         setupConstraints()
         setupTimeInput()
         setupRecurrencyInput()
+        setupObservers()
+        validateInputs()
     }
     
     private func setupConstraints() {
@@ -137,57 +140,49 @@ class NewReceiptView: UIView {
         ])
     }
     
-//    private func setupTimeInput() {
-//        let toolbar = UIToolbar()
-//        toolbar.translatesAutoresizingMaskIntoConstraints = false
-//        toolbar.sizeToFit()
-//        
-//        let doneButton = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(didSelectTime))
-//        toolbar.setItems([doneButton], animated: true)
-//        
-//        timeInput.textField.inputView = timePicker
-//        timeInput.textField.inputAccessoryView = toolbar
-//    }
-//    
-//    private func setupRecurrencyInput() {
-//        let toolbar = UIToolbar()
-//        toolbar.translatesAutoresizingMaskIntoConstraints = false
-//        toolbar.sizeToFit()
-//        
-//        let doneButton = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(didSelectRecurrency))
-//        toolbar.setItems([doneButton], animated: true)
-//        
-//        recurrenceInput.textField.inputView = recurrencyPicker
-//        recurrenceInput.textField.inputAccessoryView = toolbar
-//        
-//        recurrencyPicker.delegate = self
-//        recurrencyPicker.dataSource = self
-//    }
-    
     private func setupTimeInput() {
         let toolbar = UIToolbar()
-        toolbar.sizeToFit() // Remove a necessidade de configurar constraints manualmente
-
+        toolbar.translatesAutoresizingMaskIntoConstraints = false
+        toolbar.sizeToFit()
+        
         let doneButton = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(didSelectTime))
         toolbar.setItems([doneButton], animated: true)
-
+        
         timeInput.textField.inputView = timePicker
-        timeInput.textField.inputAccessoryView = toolbar // Apenas associa a toolbar, sem necessidade de constraints
+        timeInput.textField.inputAccessoryView = toolbar
     }
-
+    
     private func setupRecurrencyInput() {
         let toolbar = UIToolbar()
-        toolbar.sizeToFit() // Remove a necessidade de configurar constraints manualmente
-
+        toolbar.translatesAutoresizingMaskIntoConstraints = false
+        toolbar.sizeToFit()
+        
         let doneButton = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(didSelectRecurrency))
         toolbar.setItems([doneButton], animated: true)
-
+        
         recurrenceInput.textField.inputView = recurrencyPicker
         recurrenceInput.textField.inputAccessoryView = toolbar
-
+        
         recurrencyPicker.delegate = self
         recurrencyPicker.dataSource = self
     }
+    
+    private func validateInputs() {
+        let isRemedyFilled = !(remedyInput.textField.text ?? "").isEmpty
+        let isTimeFilled = !(timeInput.textField.text ?? "").isEmpty
+        let isReccurenceFilled = !(recurrenceInput.textField.text ?? "").isEmpty
+        
+        addButton.isEnabled = isRemedyFilled && isTimeFilled && isReccurenceFilled
+        addButton.backgroundColor = addButton.isEnabled ? Colors.primaryRedBase : Colors.gray500
+    }
+    
+    private func setupObservers() {
+        remedyInput.textField.addTarget(self, action: #selector(inputDidChange), for: .editingChanged)
+        timeInput.textField.addTarget(self, action: #selector(inputDidChange), for: .editingChanged)
+        recurrenceInput.textField.addTarget(self, action: #selector(inputDidChange), for: .editingChanged)
+    }
+    
+   
     
     // MARK: - Selectors
     @objc
@@ -196,6 +191,8 @@ class NewReceiptView: UIView {
         formatter.timeStyle = .short
         timeInput.textField.text = formatter.string(from: timePicker.date)
         timeInput.textField.resignFirstResponder() // irá atualizar a ação
+        
+        validateInputs()
     }
     
     @objc
@@ -203,6 +200,13 @@ class NewReceiptView: UIView {
         let selectedRow = recurrencyPicker.selectedRow(inComponent: 0)
         recurrenceInput.textField.text = recurrencyOption[selectedRow]
         recurrenceInput.textField.resignFirstResponder()
+        
+        validateInputs()
+    }
+    
+    @objc
+    private func inputDidChange() {
+        validateInputs()
     }
 }
 
