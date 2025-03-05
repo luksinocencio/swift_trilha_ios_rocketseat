@@ -3,9 +3,10 @@ import UIKit
 class HomeViewController: UIViewController {
     let contentView: HomeView
     let flowDelegate: HomeFlowDelegate
-        
-    init(contentView: HomeView,
-         flowDelegate: HomeFlowDelegate
+    
+    init(
+        contentView: HomeView,
+        flowDelegate: HomeFlowDelegate
     ) {
         self.contentView = contentView
         self.flowDelegate = flowDelegate
@@ -57,6 +58,10 @@ class HomeViewController: UIViewController {
         contentView.newPrescriptionButton.tapAction = { [weak self] in
             self?.didTapNewPrescriptionButton()
         }
+        
+        contentView.myPrescriptionsButton.tapAction = { [weak self] in
+            self?.didTapMyReceiptsButton()
+        }
     }
     
     
@@ -73,8 +78,12 @@ extension HomeViewController: HomeViewDelegate {
         selectProfileImage()
     }
     
-    private func didTapNewPrescriptionButton() {
+    func didTapNewPrescriptionButton() {
         flowDelegate.navigateToRecipes()
+    }
+    
+    func didTapMyReceiptsButton() {
+        flowDelegate.navigateMyRecipes()
     }
 }
 

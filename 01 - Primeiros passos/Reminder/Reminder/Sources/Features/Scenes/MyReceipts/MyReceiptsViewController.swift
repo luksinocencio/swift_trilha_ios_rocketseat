@@ -2,9 +2,12 @@ import UIKit
 
 class MyReceiptsViewController: UIViewController {
     let contentView: MyReceiptsView
+    weak var flowDelegate: MyReceiptsFlowDelegate?
     
-    init(contentView: MyReceiptsView) {
+    
+    init(contentView: MyReceiptsView, flowDelegate: MyReceiptsFlowDelegate) {
         self.contentView = contentView
+        self.flowDelegate = flowDelegate
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -22,6 +25,7 @@ class MyReceiptsViewController: UIViewController {
         view.backgroundColor = Colors.gray800
         
         setupConstraints()
+        setupActions()
     }
     
     private func setupConstraints() {
@@ -33,5 +37,15 @@ class MyReceiptsViewController: UIViewController {
             contentView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             contentView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
+    }
+    
+    private func setupActions() {
+        contentView.backButton.addTarget(self, action: #selector(backButtonTapped), for: .touchUpInside)
+    }
+    
+    // MARK: Selector(s).
+    @objc
+    private func backButtonTapped() {
+        self.navigationController?.popViewController(animated: true)
     }
 }

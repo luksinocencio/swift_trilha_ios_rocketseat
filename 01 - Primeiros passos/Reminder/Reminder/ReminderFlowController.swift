@@ -16,17 +16,16 @@ class ReminderFlowController {
     }
     
     // MARK: - startFlow
+    
     func start() -> UINavigationController? {
-//        let startViewController = viewControllerFactory.makeSplashViewController(flowDelegate: self)
-        let startViewController = MyReceiptsViewController(contentView: MyReceiptsView())
+        let startViewController = viewControllerFactory.makeSplashViewController(flowDelegate: self)
         self.navigationController = UINavigationController(rootViewController: startViewController)
         return navigationController
     }
 }
 
-// MARK: - Extension(s).
+// MARK: - Splash
 
-//MARK: - Splash
 extension ReminderFlowController: SplashFlowDelegate {
     func openLoginBottomSheet() {
         let loginBottomSheet = viewControllerFactory.makeLoginBottomSheetViewController(flowDelegate: self)
@@ -44,7 +43,8 @@ extension ReminderFlowController: SplashFlowDelegate {
     }
 }
 
-//MARK: - Login
+// MARK: - Login
+
 extension ReminderFlowController: LoginBottomSheetFlowDelegate {
     func navigateToHome() {
         self.navigationController?.dismiss(animated: true)
@@ -53,7 +53,8 @@ extension ReminderFlowController: LoginBottomSheetFlowDelegate {
     }
 }
 
-//MARK: - Home
+// MARK: - Home
+
 extension ReminderFlowController: HomeFlowDelegate {
     func logout() {
         self.navigationController?.popViewController(animated: true)
@@ -64,5 +65,20 @@ extension ReminderFlowController: HomeFlowDelegate {
         let recipesViewController = viewControllerFactory.makeRecipesViewController()
         self.navigationController?.pushViewController(recipesViewController, animated: true)
         self.navigationController?.navigationBar.isHidden = true
+    }
+    
+    func navigateMyRecipes() {
+        let myReceiptsViewController = viewControllerFactory.makeMyReceiptsViewController(flowDelegate: self)
+        self.navigationController?.pushViewController(myReceiptsViewController, animated: true)
+        self.navigationController?.navigationBar.isHidden = true
+    }
+}
+
+// MARK: - MyReceipts
+
+extension ReminderFlowController: MyReceiptsFlowDelegate {
+    func goToNewReceipts() {
+        // ainda nao implementado
+        print("go to new receipts")
     }
 }

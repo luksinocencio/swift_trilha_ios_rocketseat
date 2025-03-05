@@ -2,9 +2,9 @@ import UIKit
 
 class NewReceiptView: UIView {
     let backButton: UIButton = {
-        let button = UIButton()
-        button.setImage(UIImage(systemName: "arrow.left"), for: .normal)
-        button.tintColor = Colors.gray100
+        let button = UIButton(type: .system)
+        button.setImage(UIImage(named: "arrow-left"), for: .normal)
+        button.tintColor = Colors.primaryRedBase
         button.translatesAutoresizingMaskIntoConstraints = false
         
         return button
@@ -117,7 +117,7 @@ class NewReceiptView: UIView {
     
     private func setupConstraints() {
         NSLayoutConstraint.activate([
-            backButton.topAnchor.constraint(equalTo: topAnchor, constant: Metrics.small),
+            backButton.topAnchor.constraint(equalTo: topAnchor, constant: Metrics.medium),
             backButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: Metrics.large),
             backButton.heightAnchor.constraint(equalToConstant: 24),
             backButton.widthAnchor.constraint(equalToConstant: 24),

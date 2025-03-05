@@ -1,6 +1,8 @@
 import UIKit
 
 final class ViewControllersFactory: ViewControllersFactoryProtocol {
+    
+    
     func makeSplashViewController(flowDelegate: SplashFlowDelegate) -> SplashViewController {
         let viewContent = SplashView()
         let viewController = SplashViewController(
@@ -30,6 +32,16 @@ final class ViewControllersFactory: ViewControllersFactoryProtocol {
     
     func makeRecipesViewController() -> NewReceiptViewController {
         let viewController = NewReceiptViewController()
+        return viewController
+    }
+    
+    
+    func makeMyReceiptsViewController(flowDelegate: MyReceiptsFlowDelegate) -> MyReceiptsViewController {
+        let viewContent = MyReceiptsView()
+        let viewController = MyReceiptsViewController(
+            contentView: viewContent,
+            flowDelegate: flowDelegate
+        )
         return viewController
     }
 }
