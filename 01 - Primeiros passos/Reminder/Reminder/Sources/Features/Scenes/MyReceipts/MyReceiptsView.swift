@@ -65,6 +65,14 @@ class MyReceiptsView: UIView {
         return view
     }()
     
+    let tableView: UITableView = {
+        let tableView = UITableView()
+        tableView.backgroundColor = .clear
+        tableView.separatorStyle = .none
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        return tableView
+    }()
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupView()
@@ -81,7 +89,7 @@ class MyReceiptsView: UIView {
         headerBackground.addSubview(subtitleLabel)
         headerBackground.addSubview(addButton)
         addSubview(contentBackground)
-        
+        contentBackground.addSubview(tableView)
         setupConstraints()
     }
     
@@ -114,6 +122,11 @@ class MyReceiptsView: UIView {
             contentBackground.leadingAnchor.constraint(equalTo: leadingAnchor),
             contentBackground.trailingAnchor.constraint(equalTo: trailingAnchor),
             contentBackground.bottomAnchor.constraint(equalTo: bottomAnchor),
+            
+            tableView.topAnchor.constraint(equalTo: contentBackground.topAnchor, constant: Metrics.medium),
+            tableView.leadingAnchor.constraint(equalTo: contentBackground.leadingAnchor, constant: Metrics.medium),
+            tableView.trailingAnchor.constraint(equalTo: contentBackground.trailingAnchor, constant: -Metrics.medium),
+            tableView.bottomAnchor.constraint(equalTo: contentBackground.bottomAnchor, constant: -Metrics.medium)
         ])
     }
     
