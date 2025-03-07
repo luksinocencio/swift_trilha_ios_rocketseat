@@ -3,16 +3,9 @@ import UIKit
 class MyReceiptsViewController: UIViewController {
     let contentView: MyReceiptsView
     weak var flowDelegate: MyReceiptsFlowDelegate?
+    private var medicines: [Medicine] = []
     
-    private let mockMedicamentos = [
-        ("Buscopam", "13:00", "2 em 2 horas"),
-        ("remedio", "22:00", "4 em 4 horas"),
-        ("Diazepam", "13:00", "2 em 2 horas"),
-        ("Buscopam", "13:00", "2 em 2 horas"),
-        ("aspirina", "13:00", "2 em 2 horas"),
-        ("lalalal", "13:00", "2 em 2 horas"),
-        ("swift", "15:50", "2 em 2 horas")
-    ]
+    let viewModel = MyReceiptsViewModel()
     
     init(contentView: MyReceiptsView, flowDelegate: MyReceiptsFlowDelegate) {
         self.contentView = contentView
@@ -28,6 +21,7 @@ class MyReceiptsViewController: UIViewController {
         super.viewDidLoad()
         setupTableView()
         setup()
+        loadData()
     }
     
     private func setup() {
@@ -54,6 +48,10 @@ class MyReceiptsViewController: UIViewController {
         contentView.backButton.addTarget(self, action: #selector(backButtonTapped), for: .touchUpInside)
     }
     
+    private func loadData() {
+        medicines = viewModel.fetchData()
+    }
+    
     // MARK: - UITableView
     
     private func setupTableView() {
@@ -75,7 +73,7 @@ class MyReceiptsViewController: UIViewController {
 
 extension MyReceiptsViewController: UITableViewDelegate {
     func numberOfSections(in tableView: UITableView) -> Int {
-        return mockMedicamentos.count
+        return medicines.count
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -102,9 +100,9 @@ extension MyReceiptsViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: RemedyCell.identifier, for: indexPath) as! RemedyCell
-        let medicamento = mockMedicamentos[indexPath.section]
+        let medicamento = medicines[indexPath.section]
         cell.selectionStyle = .none
-        cell.configure(title: medicamento.0, time: medicamento.1, recurrence: medicamento.2)
+        cell.configure(title: medicamento.remedy, time: medicamento.time, recurrence: medicamento.recurrence)
         return cell
     }
 }
