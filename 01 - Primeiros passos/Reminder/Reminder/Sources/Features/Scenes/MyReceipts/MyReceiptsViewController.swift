@@ -30,7 +30,7 @@ class MyReceiptsViewController: UIViewController {
         self.navigationItem.hidesBackButton = true
         
         setupConstraints()
-        setupActions()
+        contentView.delegate = self
     }
     
     private func setupConstraints() {
@@ -42,10 +42,6 @@ class MyReceiptsViewController: UIViewController {
             contentView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             contentView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
-    }
-    
-    private func setupActions() {
-        contentView.backButton.addTarget(self, action: #selector(backButtonTapped), for: .touchUpInside)
     }
     
     private func loadData() {
@@ -60,12 +56,6 @@ class MyReceiptsViewController: UIViewController {
         contentView.tableView.register(RemedyCell.self, forCellReuseIdentifier: RemedyCell.identifier)
         contentView.tableView.contentInset = UIEdgeInsets(top: 16, left: 0, bottom: 16, right: 0)
         contentView.tableView.showsVerticalScrollIndicator = false
-    }
-    
-    // MARK: Selector(s).
-    @objc
-    private func backButtonTapped() {
-        self.navigationController?.popViewController(animated: true)
     }
 }
 
@@ -105,8 +95,28 @@ extension MyReceiptsViewController: UITableViewDataSource {
         cell.configure(title: medicinesVar.remedy, time: medicinesVar.time, recurrence: medicinesVar.recurrence)
         cell.onDelete = { [weak self] in
             guard let self = self else { return }
-            self.viewModel.deleteReceipt(byId: medicinesVar.id)
+            
+            if let actualIndexPath = tableView.indexPath(for: cell) {
+                if actualIndexPath.section < self.medicines.count {
+                    self.viewModel.deleteReceipt(byId: self.medicines[actualIndexPath.section].id)
+                    self.medicines.remove(at: actualIndexPath.row)
+                    
+                    tableView.deleteSections((IndexSet(integer: actualIndexPath.section)), with: .automatic)
+                }
+            } else {
+                print("Erro ao excluir uma sessão invalida")
+            }
         }
         return cell
+    }
+}
+
+extension MyReceiptsViewController: MyReceiptsViewDelegate {
+    func didTapBackButton() {
+        flowDelegate?.popScreen()
+    }
+    
+    func didTapAddButton() {
+        flowDelegate?.goToNewReceipts()
     }
 }

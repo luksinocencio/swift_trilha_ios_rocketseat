@@ -15,6 +15,8 @@ class DBHelper {
             .url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
             .appendingPathComponent("Reminder.sqlite")
         
+        print(fileURL)
+        
         if sqlite3_open(fileURL.path(), &db) != SQLITE_OK {
             print("Erro ao abrir o banco de dados")
         }
