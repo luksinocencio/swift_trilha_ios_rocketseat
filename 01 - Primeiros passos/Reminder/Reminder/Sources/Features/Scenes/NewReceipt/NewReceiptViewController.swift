@@ -45,11 +45,19 @@ class NewReceiptViewController: UIViewController {
         newReceiptView.addButton.addTarget(self, action: #selector(addButtonTapped), for: .touchUpInside)
     }
     
+    private func clearFieldsAndResetButton() {
+        newReceiptView.remedyInput.textField.text = ""
+        newReceiptView.timeInput.textField.text = ""
+        newReceiptView.recurrenceInput.textField.text = ""
+        newReceiptView.addButton.isEnabled = false
+    }
+    
     private func playSuccessAnimation() {
         successAnimationView.isHidden = false
         successAnimationView.play { [weak self] finished in
             if finished {
                 self?.successAnimationView.isHidden = true
+                self?.clearFieldsAndResetButton()
             }
         }
     }
