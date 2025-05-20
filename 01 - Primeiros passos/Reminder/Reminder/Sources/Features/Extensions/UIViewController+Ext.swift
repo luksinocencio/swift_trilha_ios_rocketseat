@@ -3,7 +3,7 @@ import UIKit
 extension UIViewController {
     func setupContentViewToBounds(contentView: UIView) {
         contentView.translatesAutoresizingMaskIntoConstraints = false
-        
+
         NSLayoutConstraint.activate([
             contentView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             contentView.leadingAnchor.constraint(equalTo: view.leadingAnchor),

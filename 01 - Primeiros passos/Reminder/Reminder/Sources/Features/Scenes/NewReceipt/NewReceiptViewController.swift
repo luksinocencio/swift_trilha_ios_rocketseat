@@ -4,7 +4,7 @@ import UIKit
 class NewReceiptViewController: UIViewController {
     private let newReceiptView  = NewReceiptView()
     private let viewModel = NewReceiptViewModel()
-    
+
     private let successAnimationView: LottieAnimationView = {
         let animationView = LottieAnimationView(name: "success")
         animationView.contentMode = .scaleAspectFit
@@ -14,12 +14,12 @@ class NewReceiptViewController: UIViewController {
         animationView.isHidden = true
         return animationView
     }()
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         setupView()
     }
-    
+
     private func setupView() {
         view.backgroundColor = Colors.gray800
         view.addSubview(newReceiptView)
@@ -27,11 +27,11 @@ class NewReceiptViewController: UIViewController {
         setupConstraints()
         setupActions()
     }
-    
+
     private func setupConstraints() {
         newReceiptView.translatesAutoresizingMaskIntoConstraints = false
         setupContentViewToBounds(contentView: newReceiptView)
-        
+
         NSLayoutConstraint.activate([
             successAnimationView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             successAnimationView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
@@ -39,19 +39,19 @@ class NewReceiptViewController: UIViewController {
             successAnimationView.widthAnchor.constraint(equalToConstant: 120)
         ])
     }
-    
+
     private func setupActions() {
         newReceiptView.backButton.addTarget(self, action: #selector(backButtonTapped), for: .touchUpInside)
         newReceiptView.addButton.addTarget(self, action: #selector(addButtonTapped), for: .touchUpInside)
     }
-    
+
     private func clearFieldsAndResetButton() {
         newReceiptView.remedyInput.textField.text = ""
         newReceiptView.timeInput.textField.text = ""
         newReceiptView.recurrenceInput.textField.text = ""
         newReceiptView.addButton.isEnabled = false
     }
-    
+
     private func playSuccessAnimation() {
         successAnimationView.isHidden = false
         successAnimationView.play { [weak self] finished in
@@ -61,12 +61,12 @@ class NewReceiptViewController: UIViewController {
             }
         }
     }
-    
+
     @objc
     private func backButtonTapped() {
         self.navigationController?.popViewController(animated: true)
     }
-    
+
     @objc
     private func addButtonTapped() {
         let remedy = newReceiptView.remedyInput.getText()

@@ -7,14 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		7C83EDD7754F965B9C79A541 /* Pods_Reminder.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1871DE93BF44BEECFE9BD4A4 /* Pods_Reminder.framework */; };
+		13A25283EB4000F5DC042CF9 /* Pods_Reminder.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7690638B65E85CE360F1F3A9 /* Pods_Reminder.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		1871DE93BF44BEECFE9BD4A4 /* Pods_Reminder.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Reminder.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		A21CAEE658B810FE5E64437E /* Pods-Reminder.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Reminder.debug.xcconfig"; path = "Target Support Files/Pods-Reminder/Pods-Reminder.debug.xcconfig"; sourceTree = "<group>"; };
+		069B522277322441D846FBD1 /* Pods-Reminder.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Reminder.release.xcconfig"; path = "Target Support Files/Pods-Reminder/Pods-Reminder.release.xcconfig"; sourceTree = "<group>"; };
+		7690638B65E85CE360F1F3A9 /* Pods_Reminder.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Reminder.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E83B05362D49DF670090D6BD /* Reminder.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Reminder.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		F2435F96AEA3BF8E9AE5AF42 /* Pods-Reminder.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Reminder.release.xcconfig"; path = "Target Support Files/Pods-Reminder/Pods-Reminder.release.xcconfig"; sourceTree = "<group>"; };
+		FAE19B0B8589E07AD8C20C7A /* Pods-Reminder.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Reminder.debug.xcconfig"; path = "Target Support Files/Pods-Reminder/Pods-Reminder.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -43,7 +43,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7C83EDD7754F965B9C79A541 /* Pods_Reminder.framework in Frameworks */,
+				13A25283EB4000F5DC042CF9 /* Pods_Reminder.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -53,16 +53,16 @@
 		67D06C1C453CD6A9F7B2C736 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				A21CAEE658B810FE5E64437E /* Pods-Reminder.debug.xcconfig */,
-				F2435F96AEA3BF8E9AE5AF42 /* Pods-Reminder.release.xcconfig */,
+				FAE19B0B8589E07AD8C20C7A /* Pods-Reminder.debug.xcconfig */,
+				069B522277322441D846FBD1 /* Pods-Reminder.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
 		};
-		ACBDB969C6746E2B61EBB11D /* Frameworks */ = {
+		C8A1E265EEA24DE6E2BC26A2 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				1871DE93BF44BEECFE9BD4A4 /* Pods_Reminder.framework */,
+				7690638B65E85CE360F1F3A9 /* Pods_Reminder.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -73,7 +73,7 @@
 				E83B05372D49DF670090D6BD /* Products */,
 				E83B05382D49DF670090D6BD /* Reminder */,
 				67D06C1C453CD6A9F7B2C736 /* Pods */,
-				ACBDB969C6746E2B61EBB11D /* Frameworks */,
+				C8A1E265EEA24DE6E2BC26A2 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -92,11 +92,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = E83B05492D49DF680090D6BD /* Build configuration list for PBXNativeTarget "Reminder" */;
 			buildPhases = (
-				57126C34D4FE347BB905D44B /* [CP] Check Pods Manifest.lock */,
+				ED0D7226D83ACF8426DCD622 /* [CP] Check Pods Manifest.lock */,
 				E83B05322D49DF670090D6BD /* Sources */,
+				E87C61232DDBFC0B00F5C6FE /* Swiftlint */,
 				E83B05332D49DF670090D6BD /* Frameworks */,
 				E83B05342D49DF670090D6BD /* Resources */,
-				A4541EE3B96A9875A2A3CFC5 /* [CP] Embed Pods Frameworks */,
+				9E9E2DD1E5B2E53A32718BAF /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -155,7 +156,42 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		57126C34D4FE347BB905D44B /* [CP] Check Pods Manifest.lock */ = {
+		9E9E2DD1E5B2E53A32718BAF /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Reminder/Pods-Reminder-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Reminder/Pods-Reminder-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Reminder/Pods-Reminder-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		E87C61232DDBFC0B00F5C6FE /* Swiftlint */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = Swiftlint;
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if [[ \"$(uname -m)\" == arm64 ]]\nthen\n    export PATH=\"/opt/homebrew/bin:$PATH\"\nfi\n\nif command -v swiftlint >/dev/null 2>&1\nthen\n    swiftlint lint --quiet --fix && swiftlint\nelse\n    echo \"warning: `swiftlint` command not found - See https://github.com/realm/SwiftLint#installation for installation instructions.\"\nfi\n";
+		};
+		ED0D7226D83ACF8426DCD622 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -177,23 +213,6 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		A4541EE3B96A9875A2A3CFC5 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Reminder/Pods-Reminder-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Reminder/Pods-Reminder-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Reminder/Pods-Reminder-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -209,7 +228,7 @@
 /* Begin XCBuildConfiguration section */
 		E83B054A2D49DF680090D6BD /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = A21CAEE658B810FE5E64437E /* Pods-Reminder.debug.xcconfig */;
+			baseConfigurationReference = FAE19B0B8589E07AD8C20C7A /* Pods-Reminder.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -237,7 +256,7 @@
 		};
 		E83B054B2D49DF680090D6BD /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = F2435F96AEA3BF8E9AE5AF42 /* Pods-Reminder.release.xcconfig */;
+			baseConfigurationReference = 069B522277322441D846FBD1 /* Pods-Reminder.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;

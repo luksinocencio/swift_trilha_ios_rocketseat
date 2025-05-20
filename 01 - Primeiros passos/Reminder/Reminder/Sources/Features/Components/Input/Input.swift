@@ -8,7 +8,7 @@ public class Input: UIView {
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
-    
+
     let textField: UITextField =  {
         let textField = UITextField()
         textField.font = Typography.input
@@ -21,47 +21,47 @@ public class Input: UIView {
         textField.translatesAutoresizingMaskIntoConstraints = false
         return textField
     }()
-    
+
     init(title: String, placeholder: String) {
         super.init(frame: .zero)
         translatesAutoresizingMaskIntoConstraints = false
         self.titleLabel.text = title
         self.textField.placeholder = placeholder
         configurePlaceholder(placeholder: placeholder)
-        
+
         setupView()
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     func getText() -> String {
         return textField.text ?? ""
     }
-    
+
     private func setupView() {
         addSubview(titleLabel)
         addSubview(textField)
-        
+
         setupConstraints()
     }
-    
+
     private func setupConstraints() {
         NSLayoutConstraint.activate([
             self.heightAnchor.constraint(equalToConstant: 85),
-            
+
             titleLabel.topAnchor.constraint(equalTo: topAnchor),
             titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor),
             titleLabel.trailingAnchor.constraint(equalTo: trailingAnchor),
-            
+
             textField.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: Metrics.small),
             textField.leadingAnchor.constraint(equalTo: leadingAnchor),
             textField.trailingAnchor.constraint(equalTo: trailingAnchor),
             textField.heightAnchor.constraint(equalToConstant: 56)
         ])
     }
-    
+
     private func configurePlaceholder(placeholder: String) {
         textField.attributedPlaceholder = NSAttributedString(
             string: placeholder,
