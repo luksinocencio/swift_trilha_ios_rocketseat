@@ -1,5 +1,6 @@
 import Lottie
 import UIKit
+import CoreFramework
 
 class NewReceiptViewController: UIViewController {
     private let newReceiptView  = NewReceiptView()
@@ -18,6 +19,8 @@ class NewReceiptViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupView()
+        let onboarding = OnboardingView()
+        onboarding.presentOnboarding(on: view, with: ["instrucao 1", "instrucao 2", "instrucao 3"])
     }
 
     private func setupView() {
