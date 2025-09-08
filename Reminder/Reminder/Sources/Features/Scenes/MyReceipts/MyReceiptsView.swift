@@ -20,7 +20,7 @@ class MyReceiptsView: UIView {
         let image = UIImage(named: "arrow-left")
         button.setImage(image, for: .normal)
         button.tintColor = Colors.primaryBlueBase
-        button.addTarget(MyReceiptsView.self, action: #selector(didTapBackButton), for: .touchUpInside)
+        button.addTarget(self, action: #selector(didTapBackButton), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
 
         return button
