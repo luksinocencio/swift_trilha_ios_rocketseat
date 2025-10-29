@@ -35,6 +35,5 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 print("\(error) Erro ao pegar permissões")
             }
         }
-
     }
 }

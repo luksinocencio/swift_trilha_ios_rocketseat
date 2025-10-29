@@ -4,10 +4,11 @@ class UserDefaultsManager {
     private static let userKey = "userKey"
     private static let userNameKey = "userName"
     private static let profileImageKey = "profileImageKey"
+    private static let onboardingSeenKey = "onboardingSeen"
 
     static func saveUser(user: User) {
-        let enconder = JSONEncoder()
-        if let encoded = try? enconder.encode(user) {
+        let encoder = JSONEncoder()
+        if let encoded = try? encoder.encode(user) {
             UserDefaults.standard.set(encoded, forKey: userKey)
             UserDefaults.standard.synchronize()
         }
@@ -28,6 +29,7 @@ class UserDefaultsManager {
         if let imageData = UserDefaults.standard.data(forKey: profileImageKey) {
             return UIImage(data: imageData)
         }
+
         return UIImage(named: "user")
     }
 
@@ -55,5 +57,14 @@ class UserDefaultsManager {
     static func removeUserName() {
         UserDefaults.standard.removeObject(forKey: userNameKey)
         UserDefaults.standard.synchronize()
+    }
+
+    static func markOnboardingAsSeen() {
+        UserDefaults.standard.set(true, forKey: onboardingSeenKey)
+        UserDefaults.standard.synchronize()
+    }
+
+    static func hasSeenOnboarding() -> Bool {
+        return UserDefaults.standard.bool(forKey: onboardingSeenKey)
     }
 }

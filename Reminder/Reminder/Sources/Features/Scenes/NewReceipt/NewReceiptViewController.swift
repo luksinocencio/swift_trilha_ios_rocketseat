@@ -1,16 +1,15 @@
-import Lottie
 import UIKit
+import Lottie
 import CoreFramework
 
 class NewReceiptViewController: UIViewController {
-    private let newReceiptView  = NewReceiptView()
+    private let newReceiptView = NewReceiptView()
     private let viewModel = NewReceiptViewModel()
 
     private let successAnimationView: LottieAnimationView = {
         let animationView = LottieAnimationView(name: "success")
         animationView.contentMode = .scaleAspectFit
         animationView.loopMode = .playOnce
-        animationView.animationSpeed = 1.0
         animationView.translatesAutoresizingMaskIntoConstraints = false
         animationView.isHidden = true
         return animationView
@@ -19,33 +18,56 @@ class NewReceiptViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupView()
-        let onboarding = OnboardingView()
-        onboarding.presentOnboarding(on: view, with: ["instrucao 1", "instrucao 2", "instrucao 3"])
+        setActions()
+        presentOnboarding()
     }
 
     private func setupView() {
         view.backgroundColor = Colors.gray800
         view.addSubview(newReceiptView)
         view.addSubview(successAnimationView)
+        self.navigationItem.hidesBackButton = true
+
         setupConstraints()
-        setupActions()
     }
 
     private func setupConstraints() {
         newReceiptView.translatesAutoresizingMaskIntoConstraints = false
-        setupContentViewToBounds(contentView: newReceiptView)
-
         NSLayoutConstraint.activate([
+            newReceiptView.topAnchor.constraint(equalTo: view.topAnchor),
+            newReceiptView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            newReceiptView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            newReceiptView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+
             successAnimationView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             successAnimationView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-            successAnimationView.heightAnchor.constraint(equalToConstant: 120),
-            successAnimationView.widthAnchor.constraint(equalToConstant: 120)
+            successAnimationView.widthAnchor.constraint(equalToConstant: 120),
+            successAnimationView.heightAnchor.constraint(equalToConstant: 120)
         ])
     }
 
-    private func setupActions() {
+    private func setActions() {
         newReceiptView.backButton.addTarget(self, action: #selector(backButtonTapped), for: .touchUpInside)
         newReceiptView.addButton.addTarget(self, action: #selector(addButtonTapped), for: .touchUpInside)
+    }
+
+    @objc private func addButtonTapped() {
+        let remedy = newReceiptView.remedyInput.getText()
+        let time = newReceiptView.timeInput.getText()
+        let recurrence = newReceiptView.recurrenceInput.getText()
+        let takeNow = newReceiptView.takeNowCheckbox.checkbox.getIsCheckedState()
+
+        viewModel.addReceipt(remedy: remedy,
+                             time: time,
+                             recurrence: recurrence,
+                             takeNow: takeNow)
+
+        playSuccessAnimation()
+        print("receita \(remedy) adicionada")
+    }
+
+    @objc private func backButtonTapped() {
+        self.navigationController?.popViewController(animated: true)
     }
 
     private func clearFieldsAndResetButton() {
@@ -65,18 +87,18 @@ class NewReceiptViewController: UIViewController {
         }
     }
 
-    @objc
-    private func backButtonTapped() {
-        self.navigationController?.popViewController(animated: true)
-    }
+    private func presentOnboarding() {
+        if !UserDefaultsManager.hasSeenOnboarding() {
+            let onboardingView = OnboardingView()
+            let steps = [
+                (UIImage(named: "image1"), "Bem vindo ao Onboarding do Reminder"),
+                (UIImage(named: "image2"), "É fácil cadastrar seus remédios, tão simples quanto um click"),
+                (UIImage(named: "image3"), "Selecione o horário da primeira dose, e as subsequentes"),
+                (UIImage(named: "image4"), "Iremos te lembrar na hora de tomar o medicamento")
+            ]
 
-    @objc
-    private func addButtonTapped() {
-        let remedy = newReceiptView.remedyInput.getText()
-        let time = newReceiptView.timeInput.getText()
-        let recurrence = newReceiptView.recurrenceInput.getText()
-        let takeNow = false
-        playSuccessAnimation()
-        viewModel.addReceipt(remedy: remedy, time: time, recurrence: recurrence, takeNow: takeNow)
+            onboardingView.presentOnboarding(on: view, with: steps)
+            UserDefaultsManager.markOnboardingAsSeen()
+        }
     }
 }

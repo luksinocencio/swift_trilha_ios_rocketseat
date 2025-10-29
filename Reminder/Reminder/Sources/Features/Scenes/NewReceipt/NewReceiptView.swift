@@ -2,11 +2,10 @@ import UIKit
 
 class NewReceiptView: UIView {
     let backButton: UIButton = {
-        let button = UIButton(type: .system)
-        button.setImage(UIImage(named: "arrow-left"), for: .normal)
-        button.tintColor = Colors.primaryRedBase
+        let button = UIButton()
+        button.setImage(UIImage(systemName: "arrow.left"), for: .normal)
+        button.tintColor = Colors.gray100
         button.translatesAutoresizingMaskIntoConstraints = false
-
         return button
     }()
 
@@ -16,7 +15,6 @@ class NewReceiptView: UIView {
         label.textColor = Colors.primaryRedBase
         label.text = "Nova receita"
         label.translatesAutoresizingMaskIntoConstraints = false
-
         return label
     }()
 
@@ -24,29 +22,35 @@ class NewReceiptView: UIView {
         let label = UILabel()
         label.font = Typography.body
         label.textColor = Colors.gray200
-        label.text = "Adicione a sua prescrição médica para receber lembretes de quando tomar seu medicamento."
+        label.text = "Adicione a sua prescrição médica para receber lembretes de quando tomar seu medicamento"
         label.numberOfLines = 0
         label.translatesAutoresizingMaskIntoConstraints = false
-
         return label
     }()
 
     let addButton: UIButton = {
         let button = UIButton()
-        button.setTitle("+ Adicionar", for: .normal)
+        button.setTitle("Adicionar", for: .normal)
+        button.setTitleColor(Colors.gray800, for: .normal)
         button.titleLabel?.font = Typography.subHeading
         button.backgroundColor = button.isEnabled ? Colors.primaryRedBase : Colors.gray500
-        button.layer.cornerRadius = 12
-        button.setTitleColor(Colors.gray800, for: .normal)
+        button.layer.cornerRadius = Metrics.medium
+
+        let configuration = UIImage.SymbolConfiguration(weight: .bold)
+        let plusIcon = UIImage(systemName: "plus", withConfiguration: configuration)
+        button.setImage(plusIcon, for: .normal)
+        button.tintColor = Colors.gray800
+        button.imageEdgeInsets = UIEdgeInsets(top: 0, left: -8, bottom: 0, right: 0)
+
         button.translatesAutoresizingMaskIntoConstraints = false
 
         return button
     }()
 
-    let remedyInput = Input(title: "Rémedio", placeholder: "Nome do medicamento")
+    let remedyInput = Input(title: "Remédio", placeholder: "Nome do medicamento")
     let timeInput = Input(title: "Horário", placeholder: "12:00")
     let recurrenceInput = Input(title: "Recorrência", placeholder: "Selecione")
-    let takeNowCheckbox = CheckBox(title: "Tomar agora")
+    let takeNowCheckbox = Checkbox(title: "Tomar agora")
 
     let timePicker: UIDatePicker = {
         let picker = UIDatePicker()
@@ -56,32 +60,21 @@ class NewReceiptView: UIView {
         return picker
     }()
 
-    let recurrencyPicker: UIPickerView = {
+    let recurrencePicker: UIPickerView = {
         let picker = UIPickerView()
-
         picker.translatesAutoresizingMaskIntoConstraints = false
         return picker
     }()
 
-    let recurrencyOption = [
+    let recurrenceOptions = [
         "De hora em hora",
-        "De 2 em 2 horas",
-        "De 4 em 4 horas",
-        "De 6 em 6 horas",
-        "De 8 em 8 horas",
-        "De 12 em 2 horas",
+        "2 em 2 horas",
+        "4 em 4 horas",
+        "6 em 6 horas",
+        "8 em 8 horas",
+        "12 em 12 horas",
         "Um por dia"
     ]
-
-    let stackForm: UIStackView = {
-        let stack = UIStackView()
-        stack.axis = .vertical
-        stack.spacing = Metrics.small
-        stack.translatesAutoresizingMaskIntoConstraints = false
-
-        return stack
-    }()
-    // MARK: - init function(s).
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -92,57 +85,64 @@ class NewReceiptView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
 
-    // MARK: - Private function(s).
-
     private func setupView() {
         addSubview(backButton)
         addSubview(titleLabel)
         addSubview(descriptionLabel)
-        addSubview(stackForm)
-
-        stackForm.addArrangedSubview(remedyInput)
-        stackForm.addArrangedSubview(timeInput)
-        stackForm.addArrangedSubview(recurrenceInput)
-        stackForm.setCustomSpacing(48, after: recurrenceInput)
-        stackForm.addArrangedSubview(takeNowCheckbox)
-
+        addSubview(remedyInput)
+        addSubview(timeInput)
+        addSubview(recurrenceInput)
+        addSubview(takeNowCheckbox)
         addSubview(addButton)
 
-        setupConstraints()
         setupTimeInput()
-        setupRecurrencyInput()
+        setupRecurrenceInput()
+        setupConstraints()
         setupObservers()
         validateInputs()
     }
 
     private func setupConstraints() {
         NSLayoutConstraint.activate([
-            backButton.topAnchor.constraint(equalTo: topAnchor, constant: Metrics.medium),
-            backButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: Metrics.large),
+            backButton.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: Metrics.small),
+            backButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: Metrics.high),
             backButton.heightAnchor.constraint(equalToConstant: 24),
             backButton.widthAnchor.constraint(equalToConstant: 24),
 
             titleLabel.topAnchor.constraint(equalTo: backButton.bottomAnchor, constant: Metrics.small),
-            titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: Metrics.large),
+            titleLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: Metrics.high),
 
             descriptionLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: Metrics.small),
-            descriptionLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: Metrics.large),
-            descriptionLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -Metrics.large),
+            descriptionLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: Metrics.high),
+            descriptionLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -Metrics.high),
 
-            stackForm.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor, constant: Metrics.small),
-            stackForm.leadingAnchor.constraint(equalTo: descriptionLabel.leadingAnchor),
-            stackForm.trailingAnchor.constraint(equalTo: descriptionLabel.trailingAnchor),
+            remedyInput.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor, constant: Metrics.medium),
+            remedyInput.leadingAnchor.constraint(equalTo: leadingAnchor, constant: Metrics.high),
+            remedyInput.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -Metrics.high),
 
-            addButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: Metrics.large),
-            addButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -Metrics.large),
+            timeInput.topAnchor.constraint(equalTo: remedyInput.bottomAnchor, constant: Metrics.medium),
+            timeInput.leadingAnchor.constraint(equalTo: leadingAnchor, constant: Metrics.high),
+            timeInput.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -Metrics.high),
+
+            recurrenceInput.topAnchor.constraint(equalTo: timeInput.bottomAnchor, constant: Metrics.medium),
+            recurrenceInput.leadingAnchor.constraint(equalTo: leadingAnchor, constant: Metrics.high),
+            recurrenceInput.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -Metrics.high),
+
+            takeNowCheckbox.topAnchor.constraint(equalTo: recurrenceInput.bottomAnchor, constant: Metrics.medium),
+            takeNowCheckbox.leadingAnchor.constraint(equalTo: recurrenceInput.leadingAnchor),
+            takeNowCheckbox.trailingAnchor.constraint(equalTo: recurrenceInput.trailingAnchor),
+            takeNowCheckbox.heightAnchor.constraint(equalToConstant: 24),
+            takeNowCheckbox.widthAnchor.constraint(equalToConstant: 24),
+
+            addButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: Metrics.high),
+            addButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -Metrics.high),
             addButton.heightAnchor.constraint(equalToConstant: 56),
-            addButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -Metrics.large)
+            addButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -Metrics.high)
         ])
     }
 
     private func setupTimeInput() {
         let toolbar = UIToolbar()
-        toolbar.translatesAutoresizingMaskIntoConstraints = false
         toolbar.sizeToFit()
 
         let doneButton = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(didSelectTime))
@@ -152,27 +152,26 @@ class NewReceiptView: UIView {
         timeInput.textField.inputAccessoryView = toolbar
     }
 
-    private func setupRecurrencyInput() {
+    private func setupRecurrenceInput() {
         let toolbar = UIToolbar()
-        toolbar.translatesAutoresizingMaskIntoConstraints = false
         toolbar.sizeToFit()
 
-        let doneButton = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(didSelectRecurrency))
+        let doneButton = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(didSelectRecurrence))
         toolbar.setItems([doneButton], animated: true)
 
-        recurrenceInput.textField.inputView = recurrencyPicker
+        recurrenceInput.textField.inputView = recurrencePicker
         recurrenceInput.textField.inputAccessoryView = toolbar
 
-        recurrencyPicker.delegate = self
-        recurrencyPicker.dataSource = self
+        recurrencePicker.delegate = self
+        recurrencePicker.dataSource = self
     }
 
     private func validateInputs() {
-        let isRemedyFilled = !(remedyInput.textField.text ?? "").isEmpty
+        let isRemedyFilled = !(remedyInput.textField.text ?? "" ).isEmpty
         let isTimeFilled = !(timeInput.textField.text ?? "").isEmpty
-        let isReccurenceFilled = !(recurrenceInput.textField.text ?? "").isEmpty
+        let isRecurrenceFilled = !(recurrenceInput.textField.text ?? "").isEmpty
 
-        addButton.isEnabled = isRemedyFilled && isTimeFilled && isReccurenceFilled
+        addButton.isEnabled = isRemedyFilled && isTimeFilled && isRecurrenceFilled
         addButton.backgroundColor = addButton.isEnabled ? Colors.primaryRedBase : Colors.gray500
     }
 
@@ -182,22 +181,20 @@ class NewReceiptView: UIView {
         recurrenceInput.textField.addTarget(self, action: #selector(inputDidChange), for: .editingChanged)
     }
 
-    // MARK: - Selectors
-    @objc
-    private func didSelectTime() {
-        let formatter = DateFormatter()
-        formatter.timeStyle = .short
-        timeInput.textField.text = formatter.string(from: timePicker.date)
-        timeInput.textField.resignFirstResponder() // irá atualizar a ação
+    @objc private func didSelectRecurrence() {
+        let selectedRow = recurrencePicker.selectedRow(inComponent: 0)
+        recurrenceInput.textField.text = recurrenceOptions[selectedRow]
+        recurrenceInput.textField.resignFirstResponder()
 
         validateInputs()
     }
 
     @objc
-    private func didSelectRecurrency() {
-        let selectedRow = recurrencyPicker.selectedRow(inComponent: 0)
-        recurrenceInput.textField.text = recurrencyOption[selectedRow]
-        recurrenceInput.textField.resignFirstResponder()
+    private func didSelectTime() {
+        let formatter = DateFormatter()
+        formatter.timeStyle = .short
+        timeInput.textField.text = formatter.string(from: timePicker.date)
+        timeInput.textField.resignFirstResponder()
 
         validateInputs()
     }
@@ -208,18 +205,16 @@ class NewReceiptView: UIView {
     }
 }
 
-// MARK: - Extension(s).
-
 extension NewReceiptView: UIPickerViewDelegate, UIPickerViewDataSource {
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 1
     }
 
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-        return recurrencyOption.count
+        return recurrenceOptions.count
     }
 
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        return recurrencyOption[row]
+        return recurrenceOptions[row]
     }
 }
