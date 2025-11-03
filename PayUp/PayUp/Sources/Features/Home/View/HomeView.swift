@@ -9,7 +9,7 @@ final class HomeView: UIView {
     }()
     
     let bellButton: UIButton = {
-        let button = UIButton(type: .system)
+        let button = UIButton(type: .custom)
         button.setImage(UIImage(named: "bell"), for: .normal)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.tintColor = Colors.textHeading
@@ -25,6 +25,8 @@ final class HomeView: UIView {
         return imageView
     }()
     
+    let daySelectorView = DaySelectorView()
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupView()
@@ -39,6 +41,9 @@ final class HomeView: UIView {
         addSubview(logoImage)
         addSubview(profileImage)
         addSubview(bellButton)
+        addSubview(daySelectorView)
+        
+        daySelectorView.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
             logoImage.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: -24),
@@ -54,7 +59,12 @@ final class HomeView: UIView {
             bellButton.centerYAnchor.constraint(equalTo: logoImage.centerYAnchor),
             bellButton.trailingAnchor.constraint(equalTo: profileImage.leadingAnchor, constant: -24),
             bellButton.heightAnchor.constraint(equalToConstant: 24),
-            bellButton.widthAnchor.constraint(equalToConstant: 24)
+            bellButton.widthAnchor.constraint(equalToConstant: 24),
+            
+            daySelectorView.topAnchor.constraint(equalTo: logoImage.bottomAnchor, constant: 55),
+            daySelectorView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 24),
+            daySelectorView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            daySelectorView.heightAnchor.constraint(equalToConstant: 32)
         ])
     }
 }
