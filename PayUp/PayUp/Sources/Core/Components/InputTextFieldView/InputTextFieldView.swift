@@ -28,7 +28,7 @@ final class InputTextFieldView: UIView {
         self.type = type
         self.titleLabel.text = title
         super.init(frame: .zero)
-        translatesAutoresizingMaskIntoConstraints = false
+//        translatesAutoresizingMaskIntoConstraints = false
         setupView(placeholder: placeholder)
     }
     

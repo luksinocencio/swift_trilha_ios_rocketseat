@@ -11,7 +11,6 @@ final class PaymentCardView: UIView {
     
     private let subTitleLabel: UILabel = {
         let label = UILabel()
-        label.text = "A receber"
         label.font = Fonts.paragraphSmall()
         label.textColor = Colors.textParagraph
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -52,7 +51,7 @@ final class PaymentCardView: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        translatesAutoresizingMaskIntoConstraints = false
+//        translatesAutoresizingMaskIntoConstraints = false
         setupView()
     }
     
@@ -88,8 +87,12 @@ final class PaymentCardView: UIView {
         ])
     }
     
-    func configure(name: String, value: String) {
-        nameLabel.text = name
-        valueLabel.text = value
+    func configure(with model: PaymentCardModel) {
+        let image = UIImage(named: model.type.iconName)
+        
+        iconImageView.image = image
+        subTitleLabel.text = model.type.subtitle
+        nameLabel.text = model.name
+        valueLabel.text = model.value
     }
 }
