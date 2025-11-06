@@ -21,6 +21,9 @@ final class ClientFormView: UIView {
         return label
     }()
     
+    private lazy var valueField = CurrencyTextField(title: "Valor", placeholder: "R$ 0,00")
+    private lazy var dateField = DatePickerTextField(title: "Data de cobrança", placeholder: "DD/MM/AAAA")
+    
     init(mode: ClientFormMode) {
         self.mode = mode
         super.init(frame: .zero)
@@ -46,7 +49,9 @@ final class ClientFormView: UIView {
     
     private func setupStack() {
         let formStack = UIStackView(arrangedSubviews: [
-            titleLabel
+            titleLabel,
+            valueField,
+            dateField
         ])
         
         formStack.axis = .vertical
