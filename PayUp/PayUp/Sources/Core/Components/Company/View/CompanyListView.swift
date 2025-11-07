@@ -1,7 +1,12 @@
 import UIKit
 
+protocol CompanyListViewDelegate: AnyObject {
+    func didSelectCompany(_ company: CompanyItemModel)
+}
+
 final class CompanyListView: UIView {
     private let viewModel: CompanyViewModel
+    weak var delegate: CompanyListViewDelegate?
     
     private lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
@@ -20,7 +25,6 @@ final class CompanyListView: UIView {
     init(companies: [CompanyItemModel]) {
         self.viewModel = CompanyViewModel(companies: companies)
         super.init(frame: .zero)
-//        translatesAutoresizingMaskIntoConstraints = false
         setupView()
     }
     
@@ -57,5 +61,10 @@ extension CompanyListView: UICollectionViewDataSource {
 extension CompanyListView: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: 128, height: 141)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let selectedCompany = viewModel.companies[indexPath.item]
+        delegate?.didSelectCompany(selectedCompany)
     }
 }

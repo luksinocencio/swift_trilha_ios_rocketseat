@@ -28,7 +28,6 @@ final class InputTextFieldView: UIView {
         self.type = type
         self.titleLabel.text = title
         super.init(frame: .zero)
-//        translatesAutoresizingMaskIntoConstraints = false
         setupView(placeholder: placeholder)
     }
     
@@ -72,12 +71,12 @@ final class InputTextFieldView: UIView {
     @objc
     private func textDidChange() {
         switch type {
-        case .normal:
-            break
-        case .cellphone:
-            maskPhoneNumber()
-        case .cnpj:
-            maskCNPJ()
+            case .normal:
+                break
+            case .cellphone:
+                maskPhoneNumber()
+            case .cnpj:
+                maskCNPJ()
         }
     }
     

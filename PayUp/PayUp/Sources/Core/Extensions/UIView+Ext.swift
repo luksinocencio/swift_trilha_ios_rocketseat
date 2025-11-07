@@ -8,7 +8,7 @@ extension UIView {
         }
     }
     
-    func presentViewController() -> UIViewController? {
+    func parentViewController() -> UIViewController? {
         var responder: UIResponder? = self
         while let r = responder {
             if let vc = r as? UIViewController {
