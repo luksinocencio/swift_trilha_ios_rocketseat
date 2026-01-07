@@ -1,6 +1,6 @@
 import UIKit
 
-final class InputTextFieldView: UIView {
+class InputTextFieldView: UIView {
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.font = Fonts.labelMedium()
@@ -22,6 +22,16 @@ final class InputTextFieldView: UIView {
         return field
     }()
     
+    private let calendarButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setImage(UIImage(systemName: "calendar"), for: .normal)
+        button.tintColor = Colors.textLabel
+        button.widthAnchor.constraint(equalToConstant: 24).isActive = true
+        button.heightAnchor.constraint(equalToConstant: 24).isActive = true
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }()
+    
     private let type: InputTextFieldType
     
     init(title: String, placeholder: String, type: InputTextFieldType = .normal) {
@@ -29,10 +39,36 @@ final class InputTextFieldView: UIView {
         self.titleLabel.text = title
         super.init(frame: .zero)
         setupView(placeholder: placeholder)
+        checkType()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    // MARK: - Internal Function(s).
+    
+    func setText(_ text: String) {
+        self.textField.text = text
+    }
+    
+    func getText() -> String? {
+        return self.textField.text
+    }
+    
+    // MARK: - Private Function(s).
+    
+    private func checkType() {
+        if type == .date {
+            textField.rightView = calendarButton
+            textField.rightViewMode = .always
+            
+            calendarButton.addAction(.init(handler: {
+                [weak self] _ in
+                self?.presentDataPicker()
+            }), for: .touchUpInside)
+        }
+
     }
     
     private func setupView(placeholder: String) {
@@ -71,12 +107,14 @@ final class InputTextFieldView: UIView {
     @objc
     private func textDidChange() {
         switch type {
-            case .normal:
-                break
-            case .cellphone:
-                maskPhoneNumber()
-            case .cnpj:
-                maskCNPJ()
+        case .normal:
+            break
+        case .cellphone:
+            maskPhoneNumber()
+        case .cnpj:
+            maskCNPJ()
+        case .date:
+            maskDate()
         }
     }
     
@@ -94,6 +132,13 @@ final class InputTextFieldView: UIView {
         textField.text = applyMask(mask: mask, to: cleanCNPJ)
     }
     
+    private func maskDate() {
+        guard let text = textField.text else { return }
+        let cleanDate = text.components(separatedBy: CharacterSet.decimalDigits.inverted).joined()
+        let mask = "##/##/####"
+        textField.text = applyMask(mask: mask, to: cleanDate)
+    }
+    
     private func applyMask(mask: String, to value: String) -> String {
         var result = ""
         var index = value.startIndex
@@ -108,13 +153,36 @@ final class InputTextFieldView: UIView {
         
         return result
     }
-    
-    
-    func setText(_ text: String) {
-        self.textField.text = text
-    }
-    
-    func getText() -> String? {
-        return self.textField.text
+}
+
+//MARK: - extension
+
+extension InputTextFieldView {
+    private func presentDataPicker() {
+        let alert = UIAlertController(title: "\n\n\n\n\n\n\n\n",
+                                      message: nil,
+                                      preferredStyle: .actionSheet)
+        let picker = UIDatePicker()
+        picker.datePickerMode = .date
+        picker.preferredDatePickerStyle = .wheels
+        picker.translatesAutoresizingMaskIntoConstraints = false
+        
+        alert.view.addSubview(picker)
+        NSLayoutConstraint.activate([
+            picker.leadingAnchor.constraint(equalTo: alert.view.leadingAnchor, constant: 8),
+            picker.trailingAnchor.constraint(equalTo: alert.view.trailingAnchor, constant: -8),
+            picker.topAnchor.constraint(equalTo: alert.view.topAnchor, constant: 8),
+            picker.heightAnchor.constraint(equalToConstant: 200)
+        ])
+        
+        alert.addAction(.init(title: "Ok", style: .default) { _ in
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "dd/MM/yyyy"
+            self.textField.text = dateFormatter.string(from: picker.date)
+        })
+        
+        if let viewController = self.parentViewController() {
+            viewController.present(alert, animated: true)
+        }
     }
 }
