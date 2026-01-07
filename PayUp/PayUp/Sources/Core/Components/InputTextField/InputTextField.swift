@@ -1,5 +1,15 @@
 import UIKit
 
+class PaddedTextField: UITextField {
+    var rightPadding: CGFloat = 8
+    
+    override func rightViewRect(forBounds bounds: CGRect) -> CGRect {
+        var rect = super.rightViewRect(forBounds: bounds)
+        rect.origin.x -= rightPadding
+        return rect
+    }
+}
+
 class InputTextFieldView: UIView {
     private let titleLabel: UILabel = {
         let label = UILabel()
@@ -9,8 +19,8 @@ class InputTextFieldView: UIView {
         return label
     }()
     
-    private let textField: UITextField = {
-        let field = UITextField()
+    private let textField: PaddedTextField = {
+        let field = PaddedTextField()
         field.backgroundColor = Colors.backgroundTertiary
         field.textColor = Colors.textLabel
         field.font = Fonts.paragraphMedium()
@@ -22,16 +32,6 @@ class InputTextFieldView: UIView {
         return field
     }()
     
-    private let calendarButton: UIButton = {
-        let button = UIButton(type: .system)
-        button.setImage(UIImage(systemName: "calendar"), for: .normal)
-        button.tintColor = Colors.textLabel
-        button.widthAnchor.constraint(equalToConstant: 24).isActive = true
-        button.heightAnchor.constraint(equalToConstant: 24).isActive = true
-        button.translatesAutoresizingMaskIntoConstraints = false
-        return button
-    }()
-    
     private let type: InputTextFieldType
     
     init(title: String, placeholder: String, type: InputTextFieldType = .normal) {
@@ -39,7 +39,6 @@ class InputTextFieldView: UIView {
         self.titleLabel.text = title
         super.init(frame: .zero)
         setupView(placeholder: placeholder)
-        checkType()
     }
     
     required init?(coder: NSCoder) {
@@ -56,20 +55,16 @@ class InputTextFieldView: UIView {
         return self.textField.text
     }
     
-    // MARK: - Private Function(s).
-    
-    private func checkType() {
-        if type == .date {
-            textField.rightView = calendarButton
-            textField.rightViewMode = .always
-            
-            calendarButton.addAction(.init(handler: {
-                [weak self] _ in
-                self?.presentDataPicker()
-            }), for: .touchUpInside)
-        }
-
+    func rightView(_ view: UIView) {
+        textField.rightView = view
     }
+    
+    func rightViewMode(_ mode: UITextField.ViewMode) {
+        textField.rightViewMode = mode
+    }
+    
+    
+    // MARK: - Private Function(s).
     
     private func setupView(placeholder: String) {
         addSubview(titleLabel)
@@ -115,6 +110,8 @@ class InputTextFieldView: UIView {
             maskCNPJ()
         case .date:
             maskDate()
+        case .currency:
+            maskCurrency()
         }
     }
     
@@ -153,36 +150,21 @@ class InputTextFieldView: UIView {
         
         return result
     }
-}
-
-//MARK: - extension
-
-extension InputTextFieldView {
-    private func presentDataPicker() {
-        let alert = UIAlertController(title: "\n\n\n\n\n\n\n\n",
-                                      message: nil,
-                                      preferredStyle: .actionSheet)
-        let picker = UIDatePicker()
-        picker.datePickerMode = .date
-        picker.preferredDatePickerStyle = .wheels
-        picker.translatesAutoresizingMaskIntoConstraints = false
+    
+    private func maskCurrency() {
+        guard let text = textField.text else { return }
         
-        alert.view.addSubview(picker)
-        NSLayoutConstraint.activate([
-            picker.leadingAnchor.constraint(equalTo: alert.view.leadingAnchor, constant: 8),
-            picker.trailingAnchor.constraint(equalTo: alert.view.trailingAnchor, constant: -8),
-            picker.topAnchor.constraint(equalTo: alert.view.topAnchor, constant: 8),
-            picker.heightAnchor.constraint(equalToConstant: 200)
-        ])
+        let digits = text.components(separatedBy: CharacterSet.decimalDigits.inverted).joined()
         
-        alert.addAction(.init(title: "Ok", style: .default) { _ in
-            let dateFormatter = DateFormatter()
-            dateFormatter.dateFormat = "dd/MM/yyyy"
-            self.textField.text = dateFormatter.string(from: picker.date)
-        })
+        let doubleValue = (Double(digits) ?? 0) / 100.0
         
-        if let viewController = self.parentViewController() {
-            viewController.present(alert, animated: true)
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .currency
+        formatter.locale = Locale(identifier: "pt_BR") // Brasil
+        formatter.maximumFractionDigits = 2
+        
+        if let formatted = formatter.string(from: NSNumber(value: doubleValue)) {
+            textField.text = formatted
         }
     }
 }

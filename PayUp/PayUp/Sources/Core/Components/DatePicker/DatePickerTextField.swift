@@ -1,61 +1,52 @@
 import UIKit
 
 final class DatePickerTextField: UIView {
-    private let titleLabel = UILabel()
-    private let textField = UITextField()
+    private let title: String
+    private let placeholder: String
+    
     private let calendarButton: UIButton = {
         let button = UIButton(type: .system)
         button.setImage(UIImage(systemName: "calendar"), for: .normal)
         button.tintColor = Colors.textLabel
-        button.widthAnchor.constraint(equalToConstant: 24).isActive = true
-        button.heightAnchor.constraint(equalToConstant: 24).isActive = true
         button.translatesAutoresizingMaskIntoConstraints = false
+//        NSLayoutConstraint.activate([
+//            button.widthAnchor.constraint(equalToConstant: 24),
+//            button.heightAnchor.constraint(equalToConstant: 24)
+//        ])
         return button
     }()
     
+    private lazy var textField: InputTextFieldView = {
+        let tf = InputTextFieldView(title: self.title, placeholder: self.placeholder, type: .date)
+        tf.rightView(calendarButton)
+        tf.rightViewMode(.always)
+        return tf
+    }()
+    
     init(title: String, placeholder: String) {
+        self.title = title
+        self.placeholder = placeholder
         super.init(frame: .zero)
-        titleLabel.text = title
-        titleLabel.font = Fonts.titleSmall()
-        titleLabel.textColor = Colors.textHeading
+        calendarButton.addTarget(self, action: #selector(calendarTapped), for: .touchUpInside)
         
-        textField.backgroundColor = Colors.backgroundTertiary
-        textField.layer.cornerRadius = 8
-        textField.layer.borderWidth = 1
-        textField.layer.borderColor = Colors.borderPrimary.cgColor
-        textField.font = Fonts.paragraphMedium()
-        textField.textColor = Colors.textLabel
-        textField.attributedPlaceholder = NSAttributedString(string: placeholder,
-                                                             attributes: [.foregroundColor: Colors.textPlaceholder])
-        textField.setLeftPaddingPoints(12)
-        textField.rightView = calendarButton
-        textField.rightViewMode = .always
+        addSubview(textField)
         
-        calendarButton.addAction(.init(handler: {
-            [weak self] _ in
-            self?.presentDataPicker()
-        }), for: .touchUpInside)
-        
-        let stack = UIStackView(arrangedSubviews: [titleLabel, textField])
-        stack.axis = .vertical
-        stack.spacing = 4
-        
-        addSubview(stack)
-        stack.translatesAutoresizingMaskIntoConstraints = false
+        textField.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
-            stack.topAnchor.constraint(equalTo: topAnchor),
-            stack.leadingAnchor.constraint(equalTo: leadingAnchor),
-            stack.trailingAnchor.constraint(equalTo: trailingAnchor),
-            stack.bottomAnchor.constraint(equalTo: bottomAnchor),
-            
-            textField.heightAnchor.constraint(equalToConstant: 43),
-            textField.widthAnchor.constraint(equalToConstant: 200)
+            textField.topAnchor.constraint(equalTo: topAnchor),
+            textField.leadingAnchor.constraint(equalTo: leadingAnchor),
+            textField.trailingAnchor.constraint(equalTo: trailingAnchor),
+            textField.bottomAnchor.constraint(equalTo: bottomAnchor),
         ])
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    @objc private func calendarTapped() {
+        presentDataPicker()
     }
     
     func presentDataPicker() {
@@ -78,7 +69,7 @@ final class DatePickerTextField: UIView {
         alert.addAction(.init(title: "Ok", style: .default) { _ in
             let dateFormatter = DateFormatter()
             dateFormatter.dateFormat = "dd/MM/yyyy"
-            self.textField.text = dateFormatter.string(from: picker.date)
+            self.textField.setText(dateFormatter.string(from: picker.date))
         })
         
         if let viewController = self.parentViewController() {
@@ -87,10 +78,10 @@ final class DatePickerTextField: UIView {
     }
     
     func setText(_ text: String) {
-        self.textField.text = text
+        self.textField.setText(text)
     }
     
     func getText() -> String? {
-        return self.textField.text
+        return self.textField.getText()
     }
 }

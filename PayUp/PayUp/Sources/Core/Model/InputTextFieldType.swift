@@ -5,4 +5,5 @@ enum InputTextFieldType {
     case cellphone
     case cnpj
     case date
+    case currency
 }

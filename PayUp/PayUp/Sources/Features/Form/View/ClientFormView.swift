@@ -65,7 +65,7 @@ final class ClientFormView: UIView {
     private lazy var addressField = InputTextFieldView(title: "Endereço", placeholder: "Ex: Rua das Flores, 123, Centro", type: .normal)
     
     private lazy var valueField = CurrencyTextField(title: "Valor", placeholder: "R$ 0,00")
-    private lazy var dateField = InputTextFieldView(title: "Data de cobrança", placeholder: "DD/MM/AAAA", type: .date)
+    private lazy var dateField = DatePickerTextField(title: "Data de cobrança", placeholder: "DD/MM/AAAA")
     
     private let cancelButton: UIButton = {
         let button = UIButton(type: .system)
