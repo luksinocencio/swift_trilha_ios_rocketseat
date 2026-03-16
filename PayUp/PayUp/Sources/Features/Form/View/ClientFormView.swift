@@ -5,7 +5,7 @@ final class ClientFormView: UIView {
     weak var delegate: ClientFormViewDelegate?
     
     let containerView: UIView = {
-       let view = UIView()
+        let view = UIView()
         view.backgroundColor = Colors.backgroundPrimary
         view.layer.cornerRadius = 16
         view.clipsToBounds = true
@@ -16,7 +16,12 @@ final class ClientFormView: UIView {
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
         label.text = "Adicionar cliente"
-        label.text = mode == .add ? "Adicionar cliente" : "Editar cliente"
+        switch mode {
+        case .add:
+            label.text = "Adicionar cliente"
+        case .edit:
+            label.text = "Editar cliente"
+        }
         label.textColor = .white
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -80,7 +85,12 @@ final class ClientFormView: UIView {
     
     private lazy var saveButton: UIButton = {
         let button = UIButton(type: .system)
-        button.setTitle(mode == .add ? "Salvar" : "Salvar alterações", for: .normal)
+        switch mode {
+        case .add:
+            button.setTitle("Salvar", for: .normal)
+        case .edit(let client):
+            button.setTitle("Salvar alterações", for: .normal)
+        }
         button.setTitleColor(Colors.backgroundPrimary, for: .normal)
         button.titleLabel?.font = Fonts.titleSmall()
         button.backgroundColor = Colors.accentBrand
@@ -142,15 +152,18 @@ final class ClientFormView: UIView {
         recurringContainer.addSubview(recurringStack)
         
         let buttonStack = UIStackView()
-        if mode == .edit {
+        switch mode {
+        case .edit:
             buttonStack.addArrangedSubview(deleteButton)
+        default:
+            break
         }
         buttonStack.addArrangedSubview(cancelButton)
         buttonStack.addArrangedSubview(saveButton)
         buttonStack.axis = .horizontal
         buttonStack.spacing = 12
         buttonStack.distribution = .fillEqually
-
+        
         let formStack = UIStackView(arrangedSubviews: [
             titleLabel,
             valueField,
@@ -187,11 +200,14 @@ final class ClientFormView: UIView {
             saveButton.heightAnchor.constraint(equalToConstant: 44)
         ])
         
-        if mode == .edit {
+        switch mode {
+        case .edit:
             NSLayoutConstraint.activate([
                 deleteButton.heightAnchor.constraint(equalToConstant: 44),
                 deleteButton.widthAnchor.constraint(equalToConstant: 44)
             ])
+        default:
+            break
         }
         
         NSLayoutConstraint.activate([
@@ -280,12 +296,31 @@ final class ClientFormView: UIView {
         daySelectorView.isHidden = !recurringSwitch.isOn
         frequencyButton.isHidden = !recurringSwitch.isOn
         
-        if mode == .edit {
-            populateFieldsForEditMode()
+        
+        switch mode {
+        case .add:
+            break
+        case .edit(let client):
+            populateFieldsForEditMode(with: client)
         }
     }
     
-    private func populateFieldsForEditMode() {
+    private func populateFieldsForEditMode(with client: Client) {
+        clientNameField.setText(client.name)
+        contactField.setText(client.contact)
+        phoneField.setText(client.phone)
+        cnpjField.setText(client.cnpj)
+        addressField.setText(client.address)
+        valueField.setValue(client.value)
+        dateField.setText(client.dueDate)
+        recurringSwitch.isOn = client.isRecurring
+        selectedFrequency = client.frequency
+        frequencyButton.setTitle(client.frequency, for: .normal)
         
+        if let selectedDay = client.selectedDay {
+            daySelectorView.selectDay(selectedDay)
+        }
+        
+        recurringToggled()
     }
 }

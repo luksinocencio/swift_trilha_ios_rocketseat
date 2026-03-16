@@ -1,3 +1,4 @@
+import Foundation
 import UIKit
 
 final class HomeViewController: UIViewController {
@@ -12,6 +13,7 @@ final class HomeViewController: UIViewController {
         super.viewDidLoad()
         self.navigationController?.navigationBar.isHidden = true
         setupCallForAddClient()
+        setupCompanyListDelegate()
         loadData()
     }
     
@@ -25,7 +27,7 @@ final class HomeViewController: UIViewController {
             guard let self = self else { return }
             let formViewController = ClientFormViewController(mode: .add)
             formViewController.modalTransitionStyle = .coverVertical
-            formViewController.modalPresentationStyle = .overCurrentContext
+            formViewController.modalPresentationStyle = .overFullScreen
             self.present(formViewController, animated: true)
         }
     }
@@ -33,9 +35,27 @@ final class HomeViewController: UIViewController {
     private func loadData() {
         let clients = viewModel.getCompanyModelsFromClients()
         let todayValue = viewModel.getTotalValueForToday()
-        let formatedValue = viewModel.formatCurrency(todayValue)
+        let formattedValue = viewModel.formatCurrency(todayValue)
         
         homeView.updateCompanyList(companies: clients)
-        homeView.updateTodayValue(value: formatedValue)
+        homeView.updateTodayValue(value: formattedValue)
+    }
+    
+    private func setupCompanyListDelegate() {
+        homeView.setCompanyListDelegate(self)
+    }
+}
+
+extension HomeViewController: CompanyListViewDelegate {
+    func didSelectCompany(_ company: CompanyItemModel) {
+        guard let client = viewModel.getClientByName(company.name) else {
+            print("cliente não encontrado")
+            return
+        }
+        
+        let formViewController = ClientFormViewController(mode: .edit(client))
+        formViewController.modalTransitionStyle = .coverVertical
+        formViewController.modalPresentationStyle = .overFullScreen
+        self.present(formViewController, animated: true)
     }
 }
