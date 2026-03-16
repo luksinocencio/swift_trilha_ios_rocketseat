@@ -47,4 +47,15 @@ final class CurrencyTextField: UIView {
     func setText(_ v: String) {
         return textField.setText(v)
     }
+    
+    func getValue() -> Double {
+        guard let text = textField.getText() else { return 0.0 }
+        
+        let cleanText = text.replacingOccurrences(of: "R$", with: "")
+            .replacingOccurrences(of: ".", with: "")
+            .replacingOccurrences(of: ",", with: ".")
+            .replacingOccurrences(of: " ", with: "")
+        
+        return Double(cleanText) ?? 0.0
+    }
 }
