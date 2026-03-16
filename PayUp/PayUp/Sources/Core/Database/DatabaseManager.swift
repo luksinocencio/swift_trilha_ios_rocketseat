@@ -40,7 +40,7 @@ final class DatabaseManager {
         }
     }
     
-    func saveClient(_ client: Client) {
+    func saveClient(_ client: Client) -> Bool {
         let insertSQL = "INSERT INTO clients (name, contact, phone, cnpj, address, value, due_date, is_recurring, frequency, selected_day) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
         var statement: OpaquePointer?
         
@@ -60,7 +60,15 @@ final class DatabaseManager {
             } else {
                 sqlite3_bind_null(statement, 10)
             }
+            
+            if sqlite3_step(statement) == SQLITE_DONE {
+                sqlite3_finalize(statement)
+                return true
+            }
         }
+        
+        sqlite3_finalize(statement)
+        return false
     }
     
     func getClients() -> [Client] {

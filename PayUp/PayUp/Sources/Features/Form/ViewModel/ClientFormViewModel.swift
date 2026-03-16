@@ -3,7 +3,7 @@ import Foundation
 final class ClientFormViewModel {
     private let databaseManager = DatabaseManager.shared
     
-    func saveClient(client: Client) {
+    func saveClient(client: Client) -> Bool {
         return databaseManager.saveClient(client)
     }
     

@@ -22,7 +22,7 @@ final class DaySelectorView: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-//        translatesAutoresizingMaskIntoConstraints = false
+        
         setupView()
         setupButtons()
         updateSelection(index: viewModel.selectedIndex)

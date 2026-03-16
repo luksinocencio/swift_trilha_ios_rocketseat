@@ -2,6 +2,7 @@ import UIKit
 
 final class ClientFormViewController: UIViewController {
     private let mode: ClientFormMode
+    private let viewModel = ClientFormViewModel()
     private var hasInitializedPosition = false
     private lazy var contentView = ClientFormView(mode: mode)
     
@@ -49,7 +50,18 @@ extension ClientFormViewController: ClientFormViewDelegate {
     
     func didTapSave() {
         dismiss(animated: true)
-        // TODO: Implementar lógica de salvar
+        guard let client = contentView.getClientData() else {
+            showAlert(title: "ERRO", message: "Dados inseridos inválidos. Verifique os campos e tente novamente.")
+            return
+        }
+        
+        let success = viewModel.saveClient(client: client)
+        
+        if success {
+            dismiss(animated: true)
+        } else {
+            showAlert(title: "ERRO", message: "Não foi possível salvar o cliente, erro ao inserir no banco de dados!")
+        }
     }
     
     func didTapDelete() {
@@ -61,6 +73,13 @@ extension ClientFormViewController: ClientFormViewDelegate {
             // TODO: Implementar lógica de deletar
             self.dismiss(animated: true)
         })
+        present(alert, animated: true)
+    }
+    
+    private func showAlert(title: String, message: String) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        let action = UIAlertAction.init(title: "OK", style: .default)
+        alert.addAction(action)
         present(alert, animated: true)
     }
 }
