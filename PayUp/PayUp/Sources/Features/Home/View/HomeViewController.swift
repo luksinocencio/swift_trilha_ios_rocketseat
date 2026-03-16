@@ -2,6 +2,7 @@ import UIKit
 
 final class HomeViewController: UIViewController {
     private let homeView = HomeView()
+    private let viewModel = HomeViewModel()
     
     override func loadView() {
         self.view = homeView
@@ -11,6 +12,12 @@ final class HomeViewController: UIViewController {
         super.viewDidLoad()
         self.navigationController?.navigationBar.isHidden = true
         setupCallForAddClient()
+        loadData()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        loadData()
     }
     
     private func setupCallForAddClient() {
@@ -21,5 +28,14 @@ final class HomeViewController: UIViewController {
             formViewController.modalPresentationStyle = .overCurrentContext
             self.present(formViewController, animated: true)
         }
+    }
+    
+    private func loadData() {
+        let clients = viewModel.getCompanyModelsFromClients()
+        let todayValue = viewModel.getTotalValueForToday()
+        let formatedValue = viewModel.formatCurrency(todayValue)
+        
+        homeView.updateCompanyList(companies: clients)
+        homeView.updateTodayValue(value: formatedValue)
     }
 }

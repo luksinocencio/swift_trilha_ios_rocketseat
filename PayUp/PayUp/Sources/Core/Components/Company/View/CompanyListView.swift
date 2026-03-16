@@ -32,6 +32,11 @@ final class CompanyListView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    func updateCompanies(_ companies: [CompanyItemModel]) {
+        viewModel.updateCompanies(companies)
+        collectionView.reloadData()
+    }
+    
     private func setupView() {
         addSubview(collectionView)
         NSLayoutConstraint.activate([

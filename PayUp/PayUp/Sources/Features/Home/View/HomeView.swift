@@ -149,13 +149,7 @@ final class HomeView: UIView {
     }()
     
     private let companyListView: CompanyListView = {
-        let companies = [
-            CompanyItemModel(name: "Aurora Tech Soluções Digitais"),
-            CompanyItemModel(name: "Veltrix Labs"),
-            CompanyItemModel(name: "Rocketseat"),
-            CompanyItemModel(name: "ApertaAi Replays"),
-        ]
-        let view = CompanyListView(companies: companies)
+        let view = CompanyListView(companies: [])
         view.heightAnchor.constraint(equalToConstant: 144).isActive = true
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
@@ -219,12 +213,24 @@ final class HomeView: UIView {
         super.init(frame: frame)
         setupView()
         
-        setupPaymentCard()
+        setupContent()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    // MARK: - Internal Function(s).
+    
+    func updateCompanyList(companies: [CompanyItemModel]) {
+        companyListView.updateCompanies(companies)
+    }
+    
+    func updateTodayValue(value: String) {
+        paymentCardView.configure(with: .init(type: .incoming, name: "Recebimentos de hoje", value: value))
+    }
+    
+    // MARK: - Private Function(s).
     
     private func setupView() {
         backgroundColor = Colors.backgroundPrimary
@@ -256,7 +262,7 @@ final class HomeView: UIView {
         // vai ser aqui no futuro
     }
     
-    private func setupPaymentCard() {
+    private func setupContent() {
         paymentCardView.configure(with: .init(type: .incoming,
                                               name: "Aurora Tech Soluções Digitais",
                                               value: "R$ 250,00"))
