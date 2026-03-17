@@ -32,7 +32,7 @@ final class ClientFormViewController: UIViewController {
         
         hasInitializedPosition = true
         contentView.containerView.transform = CGAffineTransform(translationX: 0,
-                                                                 y: contentView.containerView.bounds.height)
+                                                                y: contentView.containerView.bounds.height)
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -58,9 +58,10 @@ extension ClientFormViewController: ClientFormViewDelegate {
         let success = viewModel.saveClient(client: client)
         
         if success {
+            NotificationCenter.default.post(name: .clientDataChanged, object: nil)
             dismiss(animated: true)
         } else {
-            showAlert(title: "ERRO", message: "Não foi possível salvar o cliente, erro ao inserir no banco de dados!")
+            showAlert(title: "Erro", message: "Não foi possível salvar o cliente, erro ao inserir no banco de dados.")
         }
     }
     
@@ -70,16 +71,30 @@ extension ClientFormViewController: ClientFormViewDelegate {
                                       preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "Cancelar", style: .cancel))
         alert.addAction(UIAlertAction(title: "Excluir", style: .destructive) { _ in
-            // TODO: Implementar lógica de deletar
-            self.dismiss(animated: true)
+            guard case .edit(let client) = self.mode,
+                  let clientId = client.id else {
+                self.showAlert(title: "Erro", message: "Não foi possível identificar o cliente para exclusão")
+                return
+            }
+            
+            let success = self.viewModel.deleteClient(by: clientId)
+            if success {
+                self.dismiss(animated: true)
+                NotificationCenter.default.post(name: .clientDataChanged, object: nil)
+            } else {
+                self.showAlert(title: "Erro", message: "Não foi possível excluir o cliente do banco de dados")
+            }
         })
         present(alert, animated: true)
     }
     
     private func showAlert(title: String, message: String) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        let action = UIAlertAction.init(title: "OK", style: .default)
-        alert.addAction(action)
+        alert.addAction(UIAlertAction(title: "OK", style: .default))
         present(alert, animated: true)
     }
+}
+
+extension Notification.Name {
+    static let clientDataChanged = Notification.Name("clientDataChanged")
 }

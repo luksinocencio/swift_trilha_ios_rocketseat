@@ -1,9 +1,8 @@
 import UIKit
 
 final class CurrencyTextField: UIView {
-    private let title: String
-    private let placeholder: String
-    
+    private let titleLabel = UILabel()
+    private let textField = UITextField()
     private let currencyButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("BRL ▼", for: .normal)
@@ -13,26 +12,48 @@ final class CurrencyTextField: UIView {
         return button
     }()
     
-    private lazy var textField: InputTextFieldView = {
-        let tf = InputTextFieldView(title: self.title, placeholder: self.placeholder, type: .currency)
-        tf.rightView(currencyButton)
-        tf.rightViewMode(.always)
-        return tf
-    }()
-    
-    init(title: String, placeholder: String) {
-        self.title = title
-        self.placeholder = placeholder
+    init(
+        title: String,
+        placeholder: String,
+        autoCorrect: UITextAutocorrectionType = .default,
+        autoCapitalizationType: UITextAutocapitalizationType = .words,
+        keyboardType: UIKeyboardType = .default
+    ) {
         super.init(frame: .zero)
+        titleLabel.text = title
+        titleLabel.font = Fonts.titleSmall()
+        titleLabel.textColor = Colors.textHeading
         
-        addSubview(textField)
-        textField.translatesAutoresizingMaskIntoConstraints = false
+        textField.backgroundColor = Colors.backgroundTertiary
+        textField.layer.cornerRadius = 8
+        textField.layer.borderWidth = 1
+        textField.layer.borderColor = Colors.borderPrimary.cgColor
+        textField.font = Fonts.paragraphMedium()
+        textField.textColor = Colors.textLabel
+        textField.attributedPlaceholder = NSAttributedString(string: placeholder,
+                                                             attributes: [.foregroundColor: Colors.textPlaceholder])
+        textField.setLeftPaddingPoints(12)
+        textField.rightView = currencyButton
+        textField.rightViewMode = .always
+        textField.autocorrectionType = autoCorrect
+        textField.autocapitalizationType = autoCapitalizationType
+        textField.keyboardType = keyboardType
+        
+        let stack = UIStackView(arrangedSubviews: [titleLabel, textField])
+        stack.axis = .vertical
+        stack.spacing = 4
+        
+        addSubview(stack)
+        stack.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
-            textField.topAnchor.constraint(equalTo: topAnchor),
-            textField.leadingAnchor.constraint(equalTo: leadingAnchor),
-            textField.trailingAnchor.constraint(equalTo: trailingAnchor),
-            textField.bottomAnchor.constraint(equalTo: bottomAnchor),
+            stack.topAnchor.constraint(equalTo: topAnchor),
+            stack.leadingAnchor.constraint(equalTo: leadingAnchor),
+            stack.trailingAnchor.constraint(equalTo: trailingAnchor),
+            stack.bottomAnchor.constraint(equalTo: bottomAnchor),
+            
+            textField.heightAnchor.constraint(equalToConstant: 43),
+            textField.widthAnchor.constraint(equalToConstant: 200)
         ])
     }
     
@@ -41,15 +62,15 @@ final class CurrencyTextField: UIView {
     }
     
     func getText() -> String? {
-        return textField.getText()
+        return textField.text
     }
     
     func setText(_ v: String) {
-        return textField.setText(v)
+        textField.text = v
     }
     
     func getValue() -> Double {
-        guard let text = textField.getText() else { return 0.0 }
+        guard let text = textField.text else { return 0.0 }
         
         let cleanText = text.replacingOccurrences(of: "R$", with: "")
             .replacingOccurrences(of: ".", with: "")
@@ -64,6 +85,6 @@ final class CurrencyTextField: UIView {
         formatter.numberStyle = .currency
         formatter.currencyCode = "BRL"
         formatter.locale = Locale(identifier: "pt_BR")
-        textField.setText(formatter.string(from: NSNumber(value: value)) ?? "R$ 0,00")
+        textField.text = formatter.string(from: NSNumber(value: value)) ?? "R$ 0,00"
     }
 }

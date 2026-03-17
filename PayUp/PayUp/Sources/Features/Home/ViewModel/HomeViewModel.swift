@@ -14,17 +14,25 @@ final class HomeViewModel {
         dateFormatter.dateFormat = "dd/MM/yyyy"
         let todayString = dateFormatter.string(from: today)
         
-        return allClients.filter { $0.dueDate == todayString }
+        return allClients.filter { client in
+            return client.dueDate == todayString
+        }
     }
     
     func getCompanyModelsFromClients() -> [CompanyItemModel] {
         let clients = getAllClients()
         
-        return clients.map { CompanyItemModel(name: $0.name) }
+        return clients.map { client in
+            CompanyItemModel(name: client.name)
+        }
     }
     
     func getTotalValueForToday() -> Double {
-        getTodayClients().reduce(0, { $0 + $1.value })
+        let todayClients = getTodayClients()
+        
+        return todayClients.reduce(0) { total, client in
+            total + client.value
+        }
     }
     
     func formatCurrency(_ value: Double) -> String {
@@ -32,6 +40,7 @@ final class HomeViewModel {
         formatter.numberStyle = .currency
         formatter.currencyCode = "BRL"
         formatter.locale = Locale(identifier: "pt_BR")
+        
         return formatter.string(from: NSNumber(value: value)) ?? "R$ 0,00"
     }
     

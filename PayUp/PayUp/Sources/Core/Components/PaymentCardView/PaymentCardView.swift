@@ -2,22 +2,22 @@ import UIKit
 
 final class PaymentCardView: UIView {
     private let iconImageView: UIImageView = {
-        let imageView = UIImageView(image: UIImage(named: "calendarDollar"))
+        let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
         imageView.tintColor = Colors.accentOrange
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
     
-    private let subTitleLabel: UILabel = {
+    private let subtitleLable: UILabel = {
         let label = UILabel()
         label.font = Fonts.paragraphSmall()
-        label.textColor = Colors.textParagraph
+        label.textColor = Colors.textSpan
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
-    private let nameLabel: UILabel = {
+    private let nameLable: UILabel = {
         let label = UILabel()
         label.font = Fonts.titleSmall()
         label.textColor = Colors.textHeading
@@ -25,20 +25,12 @@ final class PaymentCardView: UIView {
         return label
     }()
     
-    private let valueLabel: UILabel = {
+    private let valueLable: UILabel = {
         let label = UILabel()
         label.font = Fonts.paragraphMedium()
         label.textColor = Colors.textParagraph
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
-    }()
-    
-    private let stackView: UIStackView = {
-        let stackView = UIStackView()
-        stackView.axis = .vertical
-        stackView.spacing = 2
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        return stackView
     }()
     
     private let container: UIView = {
@@ -51,7 +43,6 @@ final class PaymentCardView: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-//        translatesAutoresizingMaskIntoConstraints = false
         setupView()
     }
     
@@ -62,12 +53,9 @@ final class PaymentCardView: UIView {
     private func setupView() {
         addSubview(container)
         container.addSubview(iconImageView)
-        
-        stackView.addArrangedSubview(subTitleLabel)
-        stackView.addArrangedSubview(nameLabel)
-        stackView.addArrangedSubview(valueLabel)
-        
-        container.addSubview(stackView)
+        container.addSubview(subtitleLable)
+        container.addSubview(nameLable)
+        container.addSubview(valueLable)
         
         NSLayoutConstraint.activate([
             container.topAnchor.constraint(equalTo: topAnchor),
@@ -75,15 +63,21 @@ final class PaymentCardView: UIView {
             container.trailingAnchor.constraint(equalTo: trailingAnchor),
             container.bottomAnchor.constraint(equalTo: bottomAnchor),
             
-            iconImageView.topAnchor.constraint(equalTo: container.topAnchor, constant: 16),
-            iconImageView.leadingAnchor.constraint(equalTo: container.leadingAnchor, constant: 16),
-            iconImageView.heightAnchor.constraint(equalToConstant: 24),
+            iconImageView.topAnchor.constraint(equalTo: container.topAnchor, constant: 12),
+            iconImageView.leadingAnchor.constraint(equalTo: container.leadingAnchor, constant: 12),
             iconImageView.widthAnchor.constraint(equalToConstant: 24),
+            iconImageView.heightAnchor.constraint(equalToConstant: 24),
             
-            stackView.leadingAnchor.constraint(equalTo: iconImageView.trailingAnchor, constant: 16),
-            stackView.topAnchor.constraint(equalTo: container.topAnchor, constant: 16),
-            stackView.trailingAnchor.constraint(equalTo: container.trailingAnchor, constant: -16),
-            stackView.bottomAnchor.constraint(equalTo: container.bottomAnchor, constant: -16)
+            subtitleLable.topAnchor.constraint(equalTo: iconImageView.topAnchor),
+            subtitleLable.leadingAnchor.constraint(equalTo: iconImageView.trailingAnchor, constant: 8),
+            
+            nameLable.topAnchor.constraint(equalTo: subtitleLable.bottomAnchor, constant: 4),
+            nameLable.leadingAnchor.constraint(equalTo: subtitleLable.leadingAnchor),
+            nameLable.trailingAnchor.constraint(equalTo: container.trailingAnchor, constant: -8),
+            
+            valueLable.topAnchor.constraint(equalTo: nameLable.bottomAnchor, constant: 4),
+            valueLable.leadingAnchor.constraint(equalTo: subtitleLable.leadingAnchor),
+            valueLable.bottomAnchor.constraint(equalTo: container.bottomAnchor, constant: -12)
         ])
     }
     
@@ -91,8 +85,8 @@ final class PaymentCardView: UIView {
         let image = UIImage(named: model.type.iconName)
         
         iconImageView.image = image
-        subTitleLabel.text = model.type.subtitle
-        nameLabel.text = model.name
-        valueLabel.text = model.value
+        subtitleLable.text = model.type.subtitle
+        nameLable.text = model.name
+        valueLable.text = model.value
     }
 }

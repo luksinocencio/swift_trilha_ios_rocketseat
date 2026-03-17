@@ -3,7 +3,7 @@ import UIKit
 final class HomeView: UIView {
     var onTapAddClient: (() -> Void)?
     
-    // MARK: Property (ies).
+    // MARK: - Scroll + Container
     
     private let scrollView: UIScrollView = {
         let scrollView = UIScrollView()
@@ -27,6 +27,8 @@ final class HomeView: UIView {
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
     }()
+    
+    // MARK: - Subviews
     
     let logoImage: UIImageView = {
         let imageView = UIImageView(image: UIImage(named: "mainLogo"))
@@ -220,22 +222,6 @@ final class HomeView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    // MARK: - Internal Function(s).
-    
-    func updateCompanyList(companies: [CompanyItemModel]) {
-        companyListView.updateCompanies(companies)
-    }
-    
-    func updateTodayValue(value: String) {
-        paymentCardView.configure(with: .init(type: .incoming, name: "Recebimentos de hoje", value: value))
-    }
-    
-    func setCompanyListDelegate(_ delegate: CompanyListViewDelegate) {
-        companyListView.delegate = delegate
-    }
-    
-    // MARK: - Private Function(s).
-    
     private func setupView() {
         backgroundColor = Colors.backgroundPrimary
         addSubview(scrollView)
@@ -262,24 +248,39 @@ final class HomeView: UIView {
         ])
     }
     
-    private func setupCollectionView() {
-        // vai ser aqui no futuro
-    }
+    // MARK: - Content
     
     private func setupContent() {
-        paymentCardView.configure(with: .init(type: .incoming,
-                                              name: "Aurora Tech Soluções Digitais",
-                                              value: "R$ 250,00"))
+        //        paymentCardView.configure(with: .init(type: .incoming,
+        //                                              name: "Aurora Tech Soluções Digitais",
+        //                                              value: "R$ 250,00"))
         transactionCardView.configure(with: .init(type: .transaction,
-                                              name: "Duna Sports",
-                                              value: "R$ 450,00"))
+                                                  name: "Duna Sports",
+                                                  value: "R$ 450,00"))
     }
-    
-    // MARK: - Selector(s).
     
     @objc
     private func didTapAddClient() {
         onTapAddClient?()
     }
+    
+    // MARK: - Public Methods
+    
+    func updateCompanyList(companies: [CompanyItemModel]) {
+        companyListView.updateCompanies(companies)
+    }
+    
+    func updateTodayValue(value: String) {
+        paymentCardView.configure(
+            with: .init(
+                type: .incoming,
+                name: "Recebimentos de hoje",
+                value: value
+            )
+        )
+    }
+    
+    func setCompanyListDelegate(_ delegate: CompanyListViewDelegate) {
+        companyListView.delegate = delegate
+    }
 }
-

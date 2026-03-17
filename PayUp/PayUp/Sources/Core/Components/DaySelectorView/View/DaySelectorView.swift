@@ -6,14 +6,14 @@ final class DaySelectorView: UIView {
     private var buttons: [UIButton] = []
     
     private let scrollView: UIScrollView = {
-       let scrollView = UIScrollView()
+        let scrollView = UIScrollView()
         scrollView.showsHorizontalScrollIndicator = false
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         return scrollView
     }()
     
     private let stackView: UIStackView = {
-       let stackView = UIStackView()
+        let stackView = UIStackView()
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .horizontal
         stackView.spacing = 8
@@ -22,7 +22,6 @@ final class DaySelectorView: UIView {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        
         setupView()
         setupButtons()
         updateSelection(index: viewModel.selectedIndex)
@@ -57,6 +56,7 @@ final class DaySelectorView: UIView {
             button.setTitleColor(Colors.textHeading, for: .normal)
             button.backgroundColor = Colors.backgroundTertiary
             button.titleLabel?.font = Fonts.titleExtraSmall()
+            button.translatesAutoresizingMaskIntoConstraints = false
             button.layer.cornerRadius = 6
             button.layer.borderWidth = 1
             button.layer.borderColor = UIColor.clear.cgColor
@@ -73,7 +73,7 @@ final class DaySelectorView: UIView {
     @objc
     private func dayTapped(_ sender: UIButton) {
         updateSelection(index: sender.tag)
-        viewModel.selectDay(sender.tag)
+        viewModel.selectDay(at: sender.tag)
     }
     
     private func updateSelection(index: Int) {

@@ -32,11 +32,6 @@ final class CompanyListView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func updateCompanies(_ companies: [CompanyItemModel]) {
-        viewModel.updateCompanies(companies)
-        collectionView.reloadData()
-    }
-    
     private func setupView() {
         addSubview(collectionView)
         NSLayoutConstraint.activate([
@@ -46,6 +41,11 @@ final class CompanyListView: UIView {
             collectionView.bottomAnchor.constraint(equalTo: bottomAnchor),
         ])
     }
+    
+    func updateCompanies(_ companies: [CompanyItemModel]) {
+        viewModel.updateCompanies(companies)
+        collectionView.reloadData()
+    }
 }
 
 extension CompanyListView: UICollectionViewDataSource {
@@ -54,7 +54,9 @@ extension CompanyListView: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CompanyCell.identifier, for: indexPath) as? CompanyCell else {
+        guard let cell = collectionView.dequeueReusableCell(
+            withReuseIdentifier: CompanyCell.identifier, for: indexPath
+        ) as? CompanyCell else {
             return UICollectionViewCell()
         }
         
@@ -64,7 +66,10 @@ extension CompanyListView: UICollectionViewDataSource {
 }
 
 extension CompanyListView: UICollectionViewDelegateFlowLayout {
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+    func collectionView(
+        _ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout,
+        sizeForItemAt indexPath: IndexPath
+    ) -> CGSize {
         return CGSize(width: 128, height: 141)
     }
     

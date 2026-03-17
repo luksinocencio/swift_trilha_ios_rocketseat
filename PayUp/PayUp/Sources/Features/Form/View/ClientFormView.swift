@@ -15,7 +15,6 @@ final class ClientFormView: UIView {
     
     private lazy var titleLabel: UILabel = {
         let label = UILabel()
-        label.text = "Adicionar cliente"
         switch mode {
         case .add:
             label.text = "Adicionar cliente"
@@ -64,7 +63,7 @@ final class ClientFormView: UIView {
     
     private let daySelectorView = DaySelectorView()
     private lazy var clientNameField = InputTextFieldView(title: "Nome do cliente", placeholder: "Ex: Joao Silva", type: .normal)
-    private lazy var contactField = InputTextFieldView(title: "Contato", placeholder: "Ex: joao.silva@exemplo.com", type: .normal)
+    private lazy var contactField = InputTextFieldView(title: "Contato", placeholder: "Ex: joao.silva@exemplo.com", type: .normal, autoCorrect: .no, autoCapitalization: .none, keyboardType: .emailAddress)
     private lazy var phoneField = InputTextFieldView(title: "Telefone", placeholder: "Ex: (31) 91234-5678", type: .cellphone)
     private lazy var cnpjField = InputTextFieldView(title: "CNPJ", placeholder: "Ex: 12.345.678/0001-90", type: .cnpj)
     private lazy var addressField = InputTextFieldView(title: "Endereço", placeholder: "Ex: Rua das Flores, 123, Centro", type: .normal)
@@ -88,8 +87,8 @@ final class ClientFormView: UIView {
         switch mode {
         case .add:
             button.setTitle("Salvar", for: .normal)
-        case .edit(let client):
-            button.setTitle("Salvar alterações", for: .normal)
+        case .edit:
+            button.setTitle("Atualizar", for: .normal)
         }
         button.setTitleColor(Colors.backgroundPrimary, for: .normal)
         button.titleLabel?.font = Fonts.titleSmall()
@@ -153,10 +152,10 @@ final class ClientFormView: UIView {
         
         let buttonStack = UIStackView()
         switch mode {
+        case .add:
+            break
         case .edit:
             buttonStack.addArrangedSubview(deleteButton)
-        default:
-            break
         }
         buttonStack.addArrangedSubview(cancelButton)
         buttonStack.addArrangedSubview(saveButton)
@@ -201,13 +200,13 @@ final class ClientFormView: UIView {
         ])
         
         switch mode {
+        case .add:
+            break
         case .edit:
             NSLayoutConstraint.activate([
                 deleteButton.heightAnchor.constraint(equalToConstant: 44),
                 deleteButton.widthAnchor.constraint(equalToConstant: 44)
             ])
-        default:
-            break
         }
         
         NSLayoutConstraint.activate([
@@ -232,7 +231,16 @@ final class ClientFormView: UIView {
         let value = valueField.getValue()
         let selectedDay = daySelectorView.getSelectedDay()
         
+        let clientId: Int?
+        switch mode {
+        case .add:
+            clientId = nil
+        case .edit(let client):
+            clientId = client.id
+        }
+        
         return Client(
+            id: clientId,
             name: name,
             contact: contact,
             phone: phone,
@@ -251,6 +259,13 @@ final class ClientFormView: UIView {
         frequencyButton.addTarget(self, action: #selector(frequencyTapped), for: .touchUpInside)
         cancelButton.addTarget(self, action: #selector(cancelTapped), for: .touchUpInside)
         saveButton.addTarget(self, action: #selector(saveTapped), for: .touchUpInside)
+        
+        switch mode {
+        case .add:
+            break
+        case .edit:
+            deleteButton.addTarget(self, action: #selector(deleteTapped), for: .touchUpInside)
+        }
     }
     
     @objc
@@ -295,7 +310,6 @@ final class ClientFormView: UIView {
     private func setupInitialState() {
         daySelectorView.isHidden = !recurringSwitch.isOn
         frequencyButton.isHidden = !recurringSwitch.isOn
-        
         
         switch mode {
         case .add:

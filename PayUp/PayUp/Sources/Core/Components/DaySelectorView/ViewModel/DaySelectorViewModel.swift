@@ -16,12 +16,17 @@ final class DaySelectorViewModel {
         currentSelectedIndex = (weekDay + 5) % 7
     }
     
-    func selectDay(_ day: Int) {
-        currentSelectedIndex = day - 1
-        onDaySelected?(currentSelectedIndex)
+    func selectDay(at index: Int) {
+        currentSelectedIndex = index
+        onDaySelected?(index)
     }
     
     func getSelectedDay() -> Int? {
         return currentSelectedIndex + 1
+    }
+    
+    func selectDay(_ day: Int) {
+        currentSelectedIndex = day - 1
+        onDaySelected?(currentSelectedIndex)
     }
 }

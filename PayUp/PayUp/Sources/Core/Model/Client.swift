@@ -13,19 +13,7 @@ struct Client {
     let frequency: String
     let selectedDay: Int?
     
-    init(
-        id: Int? = nil,
-        name: String,
-        contact: String,
-        phone: String,
-        cnpj: String,
-        address: String,
-        value: Double,
-        dueDate: String,
-        isRecurring: Bool,
-        frequency: String,
-        selectedDay: Int? = nil
-    ) {
+    init(id: Int? = nil, name: String, contact: String, phone: String, cnpj: String, address: String, value: Double, dueDate: String, isRecurring: Bool, frequency: String, selectedDay: Int? = nil) {
         self.id = id
         self.name = name
         self.contact = contact

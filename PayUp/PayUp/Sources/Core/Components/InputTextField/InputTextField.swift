@@ -1,16 +1,6 @@
 import UIKit
 
-class PaddedTextField: UITextField {
-    var rightPadding: CGFloat = 8
-    
-    override func rightViewRect(forBounds bounds: CGRect) -> CGRect {
-        var rect = super.rightViewRect(forBounds: bounds)
-        rect.origin.x -= rightPadding
-        return rect
-    }
-}
-
-class InputTextFieldView: UIView {
+final class InputTextFieldView: UIView {
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.font = Fonts.labelMedium()
@@ -19,8 +9,8 @@ class InputTextFieldView: UIView {
         return label
     }()
     
-    private let textField: PaddedTextField = {
-        let field = PaddedTextField()
+    private let textField: UITextField = {
+        let field = UITextField()
         field.backgroundColor = Colors.backgroundTertiary
         field.textColor = Colors.textLabel
         field.font = Fonts.paragraphMedium()
@@ -34,9 +24,20 @@ class InputTextFieldView: UIView {
     
     private let type: InputTextFieldType
     
-    init(title: String, placeholder: String, type: InputTextFieldType = .normal) {
+    init(
+        title: String,
+        placeholder: String,
+        type: InputTextFieldType = .normal,
+        autoCorrect: UITextAutocorrectionType = .default,
+        autoCapitalization: UITextAutocapitalizationType = .words,
+        keyboardType: UIKeyboardType = .default
+    ) {
         self.type = type
         self.titleLabel.text = title
+        self.textField.autocorrectionType = autoCorrect
+        self.textField.autocapitalizationType = autoCapitalization
+        self.textField.keyboardType = keyboardType
+        
         super.init(frame: .zero)
         setupView(placeholder: placeholder)
     }
@@ -44,27 +45,6 @@ class InputTextFieldView: UIView {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-    // MARK: - Internal Function(s).
-    
-    func setText(_ text: String) {
-        self.textField.text = text
-    }
-    
-    func getText() -> String? {
-        return self.textField.text
-    }
-    
-    func rightView(_ view: UIView) {
-        textField.rightView = view
-    }
-    
-    func rightViewMode(_ mode: UITextField.ViewMode) {
-        textField.rightViewMode = mode
-    }
-    
-    
-    // MARK: - Private Function(s).
     
     private func setupView(placeholder: String) {
         addSubview(titleLabel)
@@ -136,6 +116,23 @@ class InputTextFieldView: UIView {
         textField.text = applyMask(mask: mask, to: cleanDate)
     }
     
+    private func maskCurrency() {
+        guard let text = textField.text else { return }
+        
+        let digits = text.components(separatedBy: CharacterSet.decimalDigits.inverted).joined()
+        
+        let doubleValue = (Double(digits) ?? 0) / 100.0
+        
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .currency
+        formatter.locale = Locale(identifier: "pt_BR")
+        formatter.maximumFractionDigits = 2
+        
+        if let formatted = formatter.string(from: NSNumber(value: doubleValue)) {
+            textField.text = formatted
+        }
+    }
+    
     private func applyMask(mask: String, to value: String) -> String {
         var result = ""
         var index = value.startIndex
@@ -151,20 +148,11 @@ class InputTextFieldView: UIView {
         return result
     }
     
-    private func maskCurrency() {
-        guard let text = textField.text else { return }
-        
-        let digits = text.components(separatedBy: CharacterSet.decimalDigits.inverted).joined()
-        
-        let doubleValue = (Double(digits) ?? 0) / 100.0
-        
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .currency
-        formatter.locale = Locale(identifier: "pt_BR") // Brasil
-        formatter.maximumFractionDigits = 2
-        
-        if let formatted = formatter.string(from: NSNumber(value: doubleValue)) {
-            textField.text = formatted
-        }
+    func setText(_ text: String) {
+        self.textField.text = text
+    }
+    
+    func getText() -> String? {
+        return self.textField.text
     }
 }

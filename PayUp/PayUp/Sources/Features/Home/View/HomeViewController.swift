@@ -1,4 +1,3 @@
-import Foundation
 import UIKit
 
 final class HomeViewController: UIViewController {
@@ -14,6 +13,7 @@ final class HomeViewController: UIViewController {
         self.navigationController?.navigationBar.isHidden = true
         setupCallForAddClient()
         setupCompanyListDelegate()
+        setupNotificationObserver()
         loadData()
     }
     
@@ -44,12 +44,28 @@ final class HomeViewController: UIViewController {
     private func setupCompanyListDelegate() {
         homeView.setCompanyListDelegate(self)
     }
+    
+    private func setupNotificationObserver() {
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(handleClientDataChanged),
+                                               name: .clientDataChanged,
+                                               object: nil)
+    }
+    
+    @objc
+    private func handleClientDataChanged() {
+        loadData()
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
 }
 
 extension HomeViewController: CompanyListViewDelegate {
     func didSelectCompany(_ company: CompanyItemModel) {
         guard let client = viewModel.getClientByName(company.name) else {
-            print("cliente não encontrado")
+            print("cliente não encontrado para edição")
             return
         }
         
