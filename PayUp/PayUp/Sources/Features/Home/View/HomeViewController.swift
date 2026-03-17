@@ -3,6 +3,7 @@ import UIKit
 final class HomeViewController: UIViewController {
     private let homeView = HomeView()
     private let viewModel = HomeViewModel()
+    private var currentlySelectedDate: Date = Date()
     
     override func loadView() {
         self.view = homeView
@@ -11,7 +12,7 @@ final class HomeViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.navigationController?.navigationBar.isHidden = true
-        setupCallForAddClient()
+        setupBindings()
         setupDelegates()
         setupNotificationObserver()
         loadData()
@@ -22,7 +23,7 @@ final class HomeViewController: UIViewController {
         loadData()
     }
     
-    private func setupCallForAddClient() {
+    private func setupBindings() {
         homeView.onTapAddClient = { [weak self] in
             guard let self = self else { return }
             let formViewController = ClientFormViewController(mode: .add)
@@ -30,6 +31,49 @@ final class HomeViewController: UIViewController {
             formViewController.modalPresentationStyle = .overFullScreen
             self.present(formViewController, animated: true)
         }
+        
+        homeView.onTapFilter = { [weak self] in
+            self?.showFilterOptions()
+        }
+    }
+    
+    private func showFilterOptions() {
+        let alert = UIAlertController(title: "Filtrar",
+                                      message: "Escolha como filtrar seus lançamentos",
+                                      preferredStyle: .actionSheet)
+        alert.addAction(UIAlertAction(title: "Filtrar por nome",
+                                      style: .default) { _ in
+            self.showNameFilterAlert()
+        })
+        
+        present(alert, animated: true)
+    }
+    
+    private func showNameFilterAlert() {
+        let alert = UIAlertController(title: "Filtrar por nome",
+                                      message: "Digite o nome do cliente",
+                                      preferredStyle: .alert)
+        alert.addTextField { textField in
+            textField.placeholder = "Digite o nome do cliente"
+        }
+        
+        alert.addAction(UIAlertAction(title: "Filtrar", style: .default) { _ in
+            let name = alert.textFields?.first?.text
+            self.viewModel.setNameFilter(name)
+            self.refreshCurrentDate()
+        })
+        
+        alert.addAction(UIAlertAction(title: "Cancelar", style: .cancel))
+        
+        present(alert, animated: true)
+    }
+    
+    private func refreshCurrentDate() {
+        let transactions = viewModel.getTransactionsForDate(currentlySelectedDate)
+        let dateString = viewModel.getDateString(for: currentlySelectedDate)
+        
+        homeView.updateTransactions(transactions)
+        homeView.updateTransactionDate(dateString)
     }
     
     private func loadData() {
@@ -83,6 +127,7 @@ extension HomeViewController: CompanyListViewDelegate {
 
 extension HomeViewController: DaySelectorViewDelegate {
     func didSelectDay(_ date: Date) {
+        currentlySelectedDate = date
         let transactions = viewModel.getTransactionsForDate(date)
         let dateString = viewModel.getDateString(for: date)
         

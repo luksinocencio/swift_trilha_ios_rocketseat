@@ -2,6 +2,7 @@ import Foundation
 
 final class HomeViewModel {
     private let databaseManager = DatabaseManager.shared
+    private var currentNameFilter: String?
     
     func getAllClients() -> [Client] {
         return databaseManager.getClients()
@@ -51,8 +52,9 @@ final class HomeViewModel {
     
     func getTodayTransactions() -> [PaymentCardModel] {
         let todayClients = getTodayClients()
+        let filteredClients = applyFilters(to: todayClients)
         
-        return todayClients.map { client in
+        return filteredClients.map { client in
             PaymentCardModel(type: .transaction,
                              name: client.name,
                              value: formatCurrency(client.value))
@@ -69,7 +71,9 @@ final class HomeViewModel {
             return client.dueDate == dateString
         }
         
-        return clientsForDate.map { client in
+        let filteredClients = applyFilters(to: clientsForDate)
+        
+        return filteredClients.map { client in
             PaymentCardModel(type: .transaction,
                              name: client.name,
                              value: formatCurrency(client.value))
@@ -85,5 +89,25 @@ final class HomeViewModel {
     
     func getTodayDateString() -> String {
         return getDateString(for: Date())
+    }
+    
+    func setNameFilter(_ nameFilter: String?) {
+        currentNameFilter = nameFilter
+    }
+    
+    func clearFilters() {
+        currentNameFilter = nil
+    }
+    
+    private func applyFilters(to clients: [Client]) -> [Client] {
+        var filteredClients = clients
+        
+        if let nameFilter = currentNameFilter, !nameFilter.isEmpty {
+            filteredClients = filteredClients.filter { client in
+                client.name.lowercased().contains(nameFilter.lowercased())
+            }
+        }
+        
+        return filteredClients
     }
 }

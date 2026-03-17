@@ -2,6 +2,7 @@ import UIKit
 
 final class HomeView: UIView {
     var onTapAddClient: (() -> Void)?
+    var onTapFilter: (() -> Void)?
     
     // MARK: - Scroll + Container
     
@@ -185,6 +186,7 @@ final class HomeView: UIView {
         button.contentEdgeInsets = UIEdgeInsets(top: 8, left: 12, bottom: 8, right: 12)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.heightAnchor.constraint(equalToConstant: 40).isActive = true
+        button.addTarget(self, action: #selector(didTapFilter), for: .touchUpInside)
         return button
     }()
     
@@ -280,6 +282,11 @@ final class HomeView: UIView {
     @objc
     private func didTapAddClient() {
         onTapAddClient?()
+    }
+    
+    @objc
+    private func didTapFilter() {
+        onTapFilter?()
     }
     
     // MARK: - Public Methods
