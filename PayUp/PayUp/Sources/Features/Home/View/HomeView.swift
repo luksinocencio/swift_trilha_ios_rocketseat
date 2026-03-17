@@ -143,11 +143,16 @@ final class HomeView: UIView {
         return button
     }()
     
-    private let transactionCardView: PaymentCardView = {
-        let card = PaymentCardView()
-        card.translatesAutoresizingMaskIntoConstraints = false
-        card.heightAnchor.constraint(equalToConstant: 95).isActive = true
-        return card
+    private let transactionStackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .vertical
+        stackView.spacing = 12
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        return stackView
+        //        let card = PaymentCardView()
+        //        card.translatesAutoresizingMaskIntoConstraints = false
+        //        card.heightAnchor.constraint(equalToConstant: 95).isActive = true
+        //        return card
     }()
     
     private let companyListView: CompanyListView = {
@@ -203,7 +208,7 @@ final class HomeView: UIView {
             companyListView,
             transactionHeaderStack,
             transactionDateLabel,
-            transactionCardView,
+            transactionStackView,
         ])
         stackView.axis = .vertical
         stackView.spacing = 24
@@ -214,8 +219,6 @@ final class HomeView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupView()
-        
-        setupContent()
     }
     
     required init?(coder: NSCoder) {
@@ -250,13 +253,28 @@ final class HomeView: UIView {
     
     // MARK: - Content
     
-    private func setupContent() {
-        //        paymentCardView.configure(with: .init(type: .incoming,
-        //                                              name: "Aurora Tech Soluções Digitais",
-        //                                              value: "R$ 250,00"))
-        transactionCardView.configure(with: .init(type: .transaction,
-                                                  name: "Duna Sports",
-                                                  value: "R$ 450,00"))
+    func updateTransactions(_ transactions: [PaymentCardModel]) {
+        transactionStackView.arrangedSubviews.forEach { $0.removeFromSuperview() }
+        
+        if transactions.isEmpty {
+            let emptyLabel = UILabel()
+            emptyLabel.text = "Nenhuma cobrança para hoje"
+            emptyLabel.font = Fonts.paragraphMedium()
+            emptyLabel.textColor = Colors.textParagraph
+            emptyLabel.textAlignment = .center
+            transactionStackView.addArrangedSubview(emptyLabel)
+        } else {
+            for transaction in transactions {
+                let cardView = PaymentCardView()
+                cardView.configure(with: transaction)
+                cardView.heightAnchor.constraint(equalToConstant: 95).isActive = true
+                transactionStackView.addArrangedSubview(cardView)
+            }
+        }
+    }
+    
+    func updateTransactionDate(_ dateString: String) {
+        transactionDateLabel.text = dateString
     }
     
     @objc
@@ -282,5 +300,9 @@ final class HomeView: UIView {
     
     func setCompanyListDelegate(_ delegate: CompanyListViewDelegate) {
         companyListView.delegate = delegate
+    }
+    
+    func setDaySelectorDelegate(_ delegate: DaySelectorViewDelegate) {
+        daySelectorView.delegate = delegate
     }
 }

@@ -46,15 +46,15 @@ final class DatabaseManager {
         }
     }
     
-    func saveClient(_ client: Client) -> Bool {
-        if let _ = client.id {
-            return updateClient(client)
+    func saveClientAndReturnId(_ client: Client) -> Int? {
+        if let id = client.id {
+            return updateClient(client) ? id : nil
         } else {
-            return insertClient(client)
+            return insertClientAndReturnId(client)
         }
     }
     
-    private func insertClient(_ client: Client) -> Bool {
+    private func insertClientAndReturnId(_ client: Client) -> Int? {
         let insertSQL =
         "INSERT INTO clients (name, contact, phone, cnpj, address, value, due_date, is_recurring, frequency, selected_day) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
         var statement: OpaquePointer?
@@ -63,13 +63,14 @@ final class DatabaseManager {
             bindClientData(statement: statement, client: client, includeId: false)
             
             if sqlite3_step(statement) == SQLITE_DONE {
+                let newID = Int(sqlite3_last_insert_rowid(db))
                 sqlite3_finalize(statement)
-                return true
+                return newID
             }
         }
         
         sqlite3_finalize(statement)
-        return false
+        return nil
     }
     
     private func updateClient(_ client: Client) -> Bool {

@@ -12,7 +12,7 @@ final class HomeViewController: UIViewController {
         super.viewDidLoad()
         self.navigationController?.navigationBar.isHidden = true
         setupCallForAddClient()
-        setupCompanyListDelegate()
+        setupDelegates()
         setupNotificationObserver()
         loadData()
     }
@@ -36,13 +36,18 @@ final class HomeViewController: UIViewController {
         let clients = viewModel.getCompanyModelsFromClients()
         let todayValue = viewModel.getTotalValueForToday()
         let formattedValue = viewModel.formatCurrency(todayValue)
+        let todayTransactions = viewModel.getTodayTransactions()
+        let todayDateString = viewModel.getTodayDateString()
         
         homeView.updateCompanyList(companies: clients)
         homeView.updateTodayValue(value: formattedValue)
+        homeView.updateTransactions(todayTransactions)
+        homeView.updateTransactionDate(todayDateString)
     }
     
-    private func setupCompanyListDelegate() {
+    private func setupDelegates() {
         homeView.setCompanyListDelegate(self)
+        homeView.setDaySelectorDelegate(self)
     }
     
     private func setupNotificationObserver() {
@@ -73,5 +78,15 @@ extension HomeViewController: CompanyListViewDelegate {
         formViewController.modalTransitionStyle = .coverVertical
         formViewController.modalPresentationStyle = .overFullScreen
         self.present(formViewController, animated: true)
+    }
+}
+
+extension HomeViewController: DaySelectorViewDelegate {
+    func didSelectDay(_ date: Date) {
+        let transactions = viewModel.getTransactionsForDate(date)
+        let dateString = viewModel.getDateString(for: date)
+        
+        homeView.updateTransactions(transactions)
+        homeView.updateTransactionDate(dateString)
     }
 }

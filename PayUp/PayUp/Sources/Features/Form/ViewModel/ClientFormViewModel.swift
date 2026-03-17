@@ -5,16 +5,27 @@ final class ClientFormViewModel {
     private let notificationManager = NotificationManager.shared
     
     func saveClient(client: Client) -> Bool {
-        let success = databaseManager.saveClient(client)
-        
-        if success {
+        if let savedClientId = databaseManager.saveClientAndReturnId(client) {
             if client.isRecurring {
-                notificationManager.scheduleClientReminders(for: client)
+                let clientWithId = Client(
+                    id: savedClientId,
+                    name: client.name,
+                    contact: client.contact,
+                    phone: client.phone,
+                    cnpj: client.cnpj,
+                    address: client.address,
+                    value: client.value,
+                    dueDate: client.dueDate,
+                    isRecurring: client.isRecurring,
+                    frequency: client.frequency
+                )
+                notificationManager.scheduleClientReminders(for: clientWithId)
             } else {
                 print("Cliente não colocou um lembrete")
             }
+            return true
         }
-        return success
+        return false
     }
     
     func getAllClients() -> [Client] {

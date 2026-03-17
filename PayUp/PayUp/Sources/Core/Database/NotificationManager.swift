@@ -7,7 +7,6 @@ final class NotificationManager {
     private init() {}
     
     func scheduleClientReminders(for client: Client) {
-        print("Cliente \(client)")
         guard client.isRecurring else { return }
         
         //cancelClientReminder
@@ -69,7 +68,7 @@ final class NotificationManager {
         
         let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
         
-        let identifier = "client_\(client.id ?? 0)_\(date.timeIntervalSince1970)"
+        let identifier = "client_\(client.id ?? 0)"
         let request = UNNotificationRequest(identifier: identifier, content: content, trigger: trigger)
         
         UNUserNotificationCenter.current().add(request) { error in
