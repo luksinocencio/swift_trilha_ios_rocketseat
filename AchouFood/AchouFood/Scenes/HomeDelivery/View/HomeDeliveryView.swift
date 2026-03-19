@@ -106,8 +106,8 @@ class HomeDeliveryView: UIView {
         return view
     }()
     
-    private lazy var listView: UIView = {
-        let view = UIView()
+    private lazy var listView: ListPlacesView = {
+        let view = ListPlacesView()
         view.backgroundColor = Color.gray100
         return view
     }()
@@ -140,6 +140,21 @@ class HomeDeliveryView: UIView {
         selectViewMode = pageIndex == 0 ? .list : .map
         let offsetX = CGFloat(pageIndex) * scrollView.bounds.width
         scrollView.setContentOffset(CGPoint(x: offsetX, y: 0), animated: true)
+    }
+    
+    private func showPlaces(_ places: [Place]) {
+        if (selectViewMode == .list) {
+            listView.showList(with: places)
+        } else {
+            //Apresentacao dos locais no map
+        }
+    }
+}
+
+extension HomeDeliveryView {
+    public func setup(with places: [Place]?) {
+        guard let places = places else { return }
+        showPlaces(places)
     }
 }
 
@@ -218,7 +233,7 @@ extension HomeDeliveryView: ViewCodeProtocol {
     
     func setViewConfigs() {
         backgroundColor = Color.redDark
-        scrollView.isUserInteractionEnabled = false
+        scrollView.isScrollEnabled = false
         scrollView.layer.cornerRadius = Constants.cornerRadius
         scrollView.layer.masksToBounds = true
         scrollView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
