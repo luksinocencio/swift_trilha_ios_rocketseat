@@ -3,9 +3,9 @@
   AchouFood
 
   Created by Lucas Inocencio on 17/03/26.
-  
 */
 
 "home.find.place" = "Busque por Restaurantes";
 "home.header.addressTitle" = "ENTREGAR EM";
 "home.find.places" = "Busque por restaurantes";
+"home.nearest.places" = "RESTAURANTES PERTO DE VOCÊ";

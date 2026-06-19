@@ -9,10 +9,12 @@ final class HomeDeliveryServiceMock: HomeDeliveryServicing {
     func fetchPlaces(completion: @escaping FetchPlacesCompletion) {
         let places = self.loadMoclPlaces()
         
-        if let places = places {
-            completion(.success(places))
-        } else {
-            completion(.failure(NSError()))
+        DispatchQueue.main.asyncAfter(deadline: .now() + 4.0) {
+            if let places = places {
+                completion(.success(places))
+            } else {
+                completion(.failure(NSError()))
+            }
         }
     }
     

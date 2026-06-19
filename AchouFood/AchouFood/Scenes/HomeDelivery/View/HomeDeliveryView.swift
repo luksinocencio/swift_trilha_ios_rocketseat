@@ -25,6 +25,8 @@ struct Constants {
 class HomeDeliveryView: UIView {
     
     private var selectViewMode: DisplayStyle = .list
+    private var searchText: String = String()
+    private var places: [Place]?
     
     private lazy var headerView: UIView = {
         let view = UIView()
@@ -118,6 +120,12 @@ class HomeDeliveryView: UIView {
         return view
     }()
     
+    private lazy var loadingView: UIActivityIndicatorView = {
+        let view = UIActivityIndicatorView(style: .large)
+        view.isHidden = true
+        return view
+    }()
+    
     override init(frame: CGRect = .zero) {
         super.init(frame: frame)
         buildLayout()
@@ -142,7 +150,8 @@ class HomeDeliveryView: UIView {
         scrollView.setContentOffset(CGPoint(x: offsetX, y: 0), animated: true)
     }
     
-    private func showPlaces(_ places: [Place]) {
+    private func showPlaces() {
+        guard let places = places else { return }
         if (selectViewMode == .list) {
             listView.showList(with: places)
         } else {
@@ -154,7 +163,18 @@ class HomeDeliveryView: UIView {
 extension HomeDeliveryView {
     public func setup(with places: [Place]?) {
         guard let places = places else { return }
-        showPlaces(places)
+        self.places = places
+        showPlaces()
+    }
+    
+    public func startLoading() {
+        loadingView.startAnimating()
+        loadingView.isHidden = false
+    }
+    
+    public func stopLoading() {
+        loadingView.stopAnimating()
+        loadingView.isHidden = true
     }
 }
 
@@ -164,6 +184,7 @@ extension HomeDeliveryView: ViewCodeProtocol {
         addSubview(scrollView)
         addSubview(searchTextField)
         addSubview(toggleView)
+        addSubview(loadingView)
         scrollView.addSubview(contentView)
         contentView.addSubview(listView)
         contentView.addSubview(mapView)
@@ -229,6 +250,11 @@ extension HomeDeliveryView: ViewCodeProtocol {
             make.leading.equalTo(listView.snp.trailing)
             make.top.bottom.trailing.equalToSuperview()
             make.width.equalTo(scrollView)
+        }
+        
+        loadingView.snp.makeConstraints { make in
+            make.center.equalToSuperview()
+            make.height.equalTo(80.0)
         }
     }
     
