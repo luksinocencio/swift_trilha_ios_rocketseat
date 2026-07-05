@@ -1,9 +1,9 @@
 import Foundation
 
-final class HomeDeliveryViewModel {
-    let homeDeliveryService: HomeDeliveryServicing
+class HomeDeliveryViewModel {
+    let homeDeliveryService: HomeDeliveryService
     
-    public init(service: HomeDeliveryServicing) {
+    public init(service: HomeDeliveryService) {
         self.homeDeliveryService = service
     }
     

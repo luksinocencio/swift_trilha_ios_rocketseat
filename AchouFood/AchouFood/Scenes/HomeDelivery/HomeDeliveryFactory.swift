@@ -5,11 +5,9 @@ final class HomeDeliveryFactory {
         let service = HomeDeliveryServiceMock()
         let viewModel = HomeDeliveryViewModel(service: service)
         let view = HomeDeliveryView()
-        let viewController = HomeDeliveryViewController(
-            viewModel: viewModel,
-            homeView: view,
-            coordinator: coordinator
-        )
+        let viewController = HomeDeliveryViewController(viewModel: viewModel,
+                                                        homeView: view,
+                                                        coordinator: coordinator)
         let navigationController = UINavigationController(rootViewController: viewController)
         return navigationController
     }

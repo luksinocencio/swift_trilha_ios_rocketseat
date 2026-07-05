@@ -29,7 +29,7 @@ class PlaceCell: UITableViewCell {
     private lazy var placeNameLabel: UILabel = {
         let view = UILabel()
         view.font = Typography.titleMd
-        view.textColor = Color.gray400
+        view.textColor = .black
         view.numberOfLines = 1
         return view
     }()
@@ -37,7 +37,7 @@ class PlaceCell: UITableViewCell {
     private lazy var addressLabel: UILabel = {
         let view = UILabel()
         view.font = Typography.bodyXs
-        view.textColor = .black
+        view.textColor = Color.gray400
         view.numberOfLines = 1
         return view
     }()

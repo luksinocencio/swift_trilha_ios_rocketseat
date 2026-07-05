@@ -2,13 +2,13 @@ import Foundation
 
 public typealias FetchPlacesCompletion = (Result<[Place]?, Error>) -> Void
 
-public protocol HomeDeliveryServicing {
+public protocol HomeDeliveryService {
     func fetchPlaces(completion: @escaping FetchPlacesCompletion)
 }
-final class HomeDeliveryServiceMock: HomeDeliveryServicing {
+
+final class HomeDeliveryServiceMock: HomeDeliveryService {
     func fetchPlaces(completion: @escaping FetchPlacesCompletion) {
-        let places = self.loadMoclPlaces()
-        
+        let places = self.loadMockPlaces()
         DispatchQueue.main.asyncAfter(deadline: .now() + 4.0) {
             if let places = places {
                 completion(.success(places))
@@ -18,7 +18,7 @@ final class HomeDeliveryServiceMock: HomeDeliveryServicing {
         }
     }
     
-    private func loadMoclPlaces() -> [Place]? {
+    private func loadMockPlaces() -> [Place]? {
         guard let url = Bundle.main.url(forResource: "places", withExtension: "json") else {
             return nil
         }
