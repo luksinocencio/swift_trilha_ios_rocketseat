@@ -43,11 +43,11 @@ class PlaceDetailViewController: UIViewController {
         }
         
         placeDetailView.presentAlert = { [weak self] in
-//            self?.coordinator.showAlert()
+            self?.coordinator.showAlert()
         }
         
         placeDetailView.onTraceRoute = { [weak self] origin, destination in
-//            self?.coordinator.traceRoute(origin, destination)
+            self?.coordinator.traceRoute(origin, destination)
         }
     }
 }
