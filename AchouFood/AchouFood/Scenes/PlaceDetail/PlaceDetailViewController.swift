@@ -2,6 +2,7 @@ import UIKit
 import SnapKit
 
 class PlaceDetailViewController: UIViewController {
+    
     private var place: Place
     private var placeDetailView: PlaceDetailView
     private var coordinator: DeliveryScenesCoordinator
@@ -39,6 +40,14 @@ class PlaceDetailViewController: UIViewController {
     private func bindActions() {
         placeDetailView.onBackButtonTapped = { [weak self] in
             self?.coordinator.back()
+        }
+        
+        placeDetailView.presentAlert = { [weak self] in
+//            self?.coordinator.showAlert()
+        }
+        
+        placeDetailView.onTraceRoute = { [weak self] origin, destination in
+//            self?.coordinator.traceRoute(origin, destination)
         }
     }
 }
