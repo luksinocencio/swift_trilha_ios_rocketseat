@@ -92,16 +92,6 @@ class MenuItemCell: UITableViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func loadImage(with urlString: String) {
-        if let url = URL(string: urlString) {
-            placeImageView.kf.setImage(
-                with: url,
-                placeholder: UIImage(systemName: "photo"),
-                options: [.transition(.fade(0.3))]
-            )
-        }
-    }
-    
     @objc
     private func handleAdd() {
         handleAddItem?()
@@ -119,7 +109,7 @@ extension MenuItemCell {
         countItemsLabel.text = "\(menuItem.selectedCount)"
         itemNameLabel.text = menuItem.name
         itemPriceLabel.text = "R$ \(menuItem.price)"
-        loadImage(with: menuItem.imageUrl)
+        placeImageView.loadImage(from: menuItem.imageUrl)
     }
     
     func updateCount(_ count: Int) {

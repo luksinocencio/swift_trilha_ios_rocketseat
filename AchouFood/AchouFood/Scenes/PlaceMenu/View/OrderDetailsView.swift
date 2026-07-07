@@ -35,6 +35,7 @@ class OrderDetailsView: UIView {
         view.titleLabel?.font = Typography.labelXs
         view.addTarget(self, action: #selector(handleOrder), for: .touchUpInside)
         view.setImage(UIImage(named: "order"), for: .normal)
+        view.titleEdgeInsets = UIEdgeInsets(top: 0, left: 8, bottom: 0, right: -8)
         return view
     }()
     

@@ -51,16 +51,6 @@ final class TotalOrderCell: UITableViewCell {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-    private func loadImage(with urlString: String) {
-        if let url = URL(string: urlString) {
-            placeImageView.kf.setImage(
-                with: url,
-                placeholder: UIImage(systemName: "photo"),
-                options: [.transition(.fade(0.3))]
-            )
-        }
-    }
 }
 
 extension TotalOrderCell {
@@ -68,7 +58,7 @@ extension TotalOrderCell {
         placeNameLabel.text = place.restaurantName
         itemsQuantityLabel.text = itemsQtt
         totalLabel.text = total
-        loadImage(with: place.imageUrl)
+        placeImageView.loadImage(from: place.imageUrl)
     }
 }
 

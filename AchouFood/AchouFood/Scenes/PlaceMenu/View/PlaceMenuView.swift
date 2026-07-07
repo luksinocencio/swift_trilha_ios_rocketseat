@@ -82,6 +82,7 @@ class PlaceMenuView: UIView {
         view.sectionHeaderHeight = PlaceMenuConstants.tableSectionHeight
         view.estimatedSectionHeaderHeight = PlaceMenuConstants.tableSectionHeight
         view.rowHeight = PlaceMenuConstants.rowHeight
+        view.contentInset.bottom = 300
         return view
     }()
     
@@ -109,16 +110,6 @@ class PlaceMenuView: UIView {
     @objc
     private func handleBack() {
         onBackButtonTapped?()
-    }
-    
-    private func loadImage(with urlString: String) {
-        if let url = URL(string: urlString) {
-            placeImageView.kf.setImage(
-                with: url,
-                placeholder: UIImage(systemName: "photo"),
-                options: [.transition(.fade(0.3))]
-            )
-        }
     }
     
     private func bindActions() {
@@ -180,7 +171,7 @@ extension PlaceMenuView {
     func setup(place: Place) {
         self.place = place
         self.subTitleLabel.text = place.restaurantName
-        loadImage(with: place.imageUrl)
+        placeImageView.loadImage(from: place.imageUrl)
         menuSections.setup(menuItems: place.menu ?? [])
     }
     
@@ -242,7 +233,7 @@ extension PlaceMenuView: ViewCodeProtocol {
         tableView.snp.makeConstraints { make in
             make.top.equalTo(menuSections.snp.bottom).offset(PlaceMenuConstants.tablePadding)
             make.leading.trailing.equalToSuperview()
-            make.bottom.equalTo(orderDetailsView.snp.top).offset(-12)
+            make.bottom.equalTo(safeAreaLayoutGuide.snp.bottom)
         }
         
         orderDetailsView.snp.makeConstraints { make in
