@@ -15,10 +15,14 @@ struct PlaceMenuConstants {
     static let tablePadding = 20.0
     static let tableSectionHeight = 17.0
     static let rowHeight = 104.0
+    static let orderDetailsHeight = 84.0
+    static let orderBottomPadding = 34.0
 }
 
 class PlaceMenuView: UIView {
     
+    private var isProgrammaticScroll = false
+    private var currentSection: Int = 0
     var onBackButtonTapped: (() -> Void)?
     var place: Place?
     
@@ -80,6 +84,12 @@ class PlaceMenuView: UIView {
         return view
     }()
     
+    private lazy var orderDetailsView: OrderDetailsView = {
+        let view = OrderDetailsView()
+        view.setup(items: "0 ITENS", total: "R$ 0,00")
+        return view
+    }()
+    
     public init() {
         super.init(frame: .zero)
         buildLayout()
@@ -112,8 +122,52 @@ class PlaceMenuView: UIView {
     
     private func bindActions() {
         menuSections.scrollTableTo = { [weak self] section in
-            print("Nova seção selecionada")
+            self?.scrollToSection(section)
         }
+    }
+    
+    private func scrollToSection(_ section: Int) {
+        
+        isProgrammaticScroll = true
+        currentSection = section
+        
+        menuSections.setSelected(selectedIndex: section, needToScroll: false)
+        
+        let indexPath = IndexPath(row: 0, section: section)
+        
+        tableView.scrollToRow(at: indexPath, at: .top, animated: true)
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) { [weak self] in
+            self?.isProgrammaticScroll = false
+        }
+    }
+    
+    private func updateMenuSections() {
+        guard !isProgrammaticScroll else { return }
+        
+        let posY = tableView.contentOffset.y + tableView.adjustedContentInset.top + 1
+        let point = CGPoint(x: 8, y: posY)
+        
+        if let indexPath = tableView.indexPathForRow(at: point) {
+            currentSection = indexPath.section
+            menuSections.setSelected(selectedIndex: currentSection, needToScroll: false)
+            return
+        }
+        
+        currentSection = sectionAtTop(y: posY)
+        menuSections.setSelected(selectedIndex: currentSection, needToScroll: false)
+    }
+    
+    private func sectionAtTop(y: CGFloat) -> Int {
+        guard let countSections = place?.menu?.count else { return 0 }
+        
+        for section in 0..<countSections {
+            let rect = tableView.rect(forSection: section)
+            if y >= rect.minY && y < rect.maxY {
+                return section
+            }
+        }
+        return 0
     }
 }
 
@@ -135,6 +189,7 @@ extension PlaceMenuView: ViewCodeProtocol {
         addSubview(contentView)
         contentView.addSubview(menuSections)
         contentView.addSubview(tableView)
+        contentView.addSubview(orderDetailsView)
     }
     
     func setViewConstraints() {
@@ -175,7 +230,14 @@ extension PlaceMenuView: ViewCodeProtocol {
         
         tableView.snp.makeConstraints { make in
             make.top.equalTo(menuSections.snp.bottom).offset(PlaceMenuConstants.tablePadding)
-            make.leading.trailing.bottom.equalToSuperview()
+            make.leading.trailing.equalToSuperview()
+            make.bottom.equalTo(orderDetailsView.snp.top).offset(-12)
+        }
+        
+        orderDetailsView.snp.makeConstraints { make in
+            make.leading.trailing.equalToSuperview().inset(PlaceMenuConstants.padding)
+            make.height.equalTo(PlaceMenuConstants.orderDetailsHeight)
+            make.bottom.equalToSuperview().inset(PlaceMenuConstants.orderBottomPadding)
         }
     }
     
@@ -189,6 +251,11 @@ extension PlaceMenuView: ViewCodeProtocol {
         contentView.layer.cornerRadius = Metrics.medium
         contentView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
         contentView.clipsToBounds = true
+        
+        orderDetailsView.layer.masksToBounds = true
+        orderDetailsView.layer.cornerRadius = 18.0
+        orderDetailsView.layer.borderWidth = 1.5
+        orderDetailsView.layer.borderColor = Color.gray100.cgColor
     }
 }
 
@@ -210,6 +277,53 @@ extension PlaceMenuView: UITableViewDataSource {
         
         cell?.setup(place?.menu?[section].items[row])
         
+        cell?.handleAddItem = { [weak self] in
+            guard let self else { return }
+            
+            self.place?.menu?[section].items[row].selectedCount += 1
+            
+            if let item = self.place?.menu?[section].items[row] {
+                OrderManager.shared.setItem(menuItem: item)
+            }
+            
+            let newCount = self.place?.menu?[section].items[row].selectedCount ?? 0
+            
+            if let currentCell = self.tableView.cellForRow(at: indexPath) as? MenuItemCell {
+                currentCell.updateCount(newCount)
+            }
+            
+            self.orderDetailsView.setup(items: OrderManager.shared.qttItems(),
+                                        total: OrderManager.shared.totalOrder()
+            )
+        }
+        
+        cell?.handleRemoveItem = { [weak self] in
+            guard let self else { return }
+            
+            guard (self.place?.menu?[section].items[row].selectedCount ?? 0) > 0 else {
+                if let item = self.place?.menu?[section].items[row] {
+                    OrderManager.shared.setItem(menuItem: item)
+                }
+                return
+            }
+            
+            self.place?.menu?[section].items[row].selectedCount -= 1
+            
+            if let item = self.place?.menu?[section].items[row] {
+                OrderManager.shared.setItem(menuItem: item)
+            }
+            
+            let newCount = self.place?.menu?[section].items[row].selectedCount ?? 0
+            
+            if let currentCell = self.tableView.cellForRow(at: indexPath) as? MenuItemCell {
+                currentCell.updateCount(newCount)
+            }
+            
+            self.orderDetailsView.setup(items: OrderManager.shared.qttItems(),
+                                        total: OrderManager.shared.totalOrder()
+            )
+        }
+        
         cell?.selectionStyle = .none
         return cell ?? UITableViewCell()
     }
@@ -217,6 +331,7 @@ extension PlaceMenuView: UITableViewDataSource {
 
 extension PlaceMenuView: UITableViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        updateMenuSections()
     }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
