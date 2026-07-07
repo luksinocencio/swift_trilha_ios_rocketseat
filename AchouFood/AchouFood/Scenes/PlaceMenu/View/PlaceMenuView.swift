@@ -8,7 +8,10 @@ struct PlaceMenuConstants {
     static let backButtonSize = 36.0
     static let placeImageRadius = 8.0
     static let placeImageBorderWidth = 1.0
+    static let placeImagePadding = 16.0
+    static let placeImageSize = 36.0
     static let title = "placeMenu.title".localized
+    static let sectionViewHeight = 26.0
 }
 
 class PlaceMenuView: UIView {
@@ -52,9 +55,18 @@ class PlaceMenuView: UIView {
         return view
     }()
     
+    private lazy var contentView: UIView = {
+        let view = UIView()
+        view.backgroundColor = Color.gray100
+        return view
+    }()
+    
+    private lazy var menuSections = MenuSectionsView()
+    
     public init() {
         super.init(frame: .zero)
         buildLayout()
+        bindActions()
     }
     
     required init?(coder: NSCoder) {
@@ -80,6 +92,12 @@ class PlaceMenuView: UIView {
             )
         }
     }
+    
+    private func bindActions() {
+        menuSections.scrollTableTo = { [weak self] section in
+            print("Nova seção selecionada")
+        }
+    }
 }
 
 extension PlaceMenuView {
@@ -87,6 +105,7 @@ extension PlaceMenuView {
         self.place = place
         self.subTitleLabel.text = place.restaurantName
         loadImage(with: place.imageUrl)
+        menuSections.setup(menuItems: place.menu ?? [])
     }
 }
 
@@ -96,6 +115,8 @@ extension PlaceMenuView: ViewCodeProtocol {
         addSubview(placeImageView)
         addSubview(titleLabel)
         addSubview(subTitleLabel)
+        addSubview(contentView)
+        contentView.addSubview(menuSections)
     }
     
     func setViewConstraints() {
@@ -104,6 +125,35 @@ extension PlaceMenuView: ViewCodeProtocol {
             make.leading.equalToSuperview().offset(PlaceMenuConstants.padding)
             make.size.equalTo(PlaceMenuConstants.backButtonSize)
         }
+        
+        placeImageView.snp.makeConstraints { make in
+            make.centerY.equalTo(backButton.snp.centerY)
+            make.leading.equalTo(backButton.snp.trailing).offset(PlaceMenuConstants.placeImagePadding)
+            make.size.equalTo(PlaceMenuConstants.placeImageSize)
+        }
+        
+        titleLabel.snp.makeConstraints { make in
+            make.leading.equalTo(placeImageView.snp.trailing).offset(Metrics.small)
+            make.top.equalTo(placeImageView)
+            make.trailing.equalToSuperview().inset(Metrics.medium)
+        }
+        
+        subTitleLabel.snp.makeConstraints { make in
+            make.leading.equalTo(placeImageView.snp.trailing).offset(Metrics.small)
+            make.top.equalTo(titleLabel.snp.bottom)
+            make.trailing.equalToSuperview().inset(Metrics.medium)
+        }
+        
+        contentView.snp.makeConstraints { make in
+            make.top.equalTo(placeImageView.snp.bottom).offset(Metrics.medium)
+            make.leading.trailing.bottom.equalToSuperview()
+        }
+        
+        menuSections.snp.makeConstraints { make in
+            make.top.equalToSuperview().inset(Metrics.medium)
+            make.leading.trailing.equalToSuperview()
+            make.height.equalTo(PlaceMenuConstants.sectionViewHeight)
+        }
     }
     
     func setViewConfigs() {
@@ -111,5 +161,10 @@ extension PlaceMenuView: ViewCodeProtocol {
         
         placeImageView.layer.cornerRadius = PlaceMenuConstants.placeImageRadius
         placeImageView.layer.borderWidth = PlaceMenuConstants.placeImageBorderWidth
+        placeImageView.layer.borderColor = UIColor.white.cgColor
+        
+        contentView.layer.cornerRadius = Metrics.medium
+        contentView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
+        contentView.clipsToBounds = true
     }
 }
