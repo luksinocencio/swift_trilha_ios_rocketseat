@@ -15,7 +15,7 @@ struct MenuItemCellConstants {
 
 class MenuItemCell: UITableViewCell {
     
-    static let identifier: String = "MenuItemCell"
+    static let reuseIdentifier: String = "MenuItemCell"
     var handleAddItem: (() -> Void)?
     var handleRemoveItem: (() -> Void)?
     

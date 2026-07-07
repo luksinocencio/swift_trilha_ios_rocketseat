@@ -73,7 +73,7 @@ class PlaceMenuView: UIView {
     
     private lazy var tableView: UITableView = {
         let view = UITableView(frame: .zero, style: .insetGrouped)
-        view.register(MenuItemCell.self, forCellReuseIdentifier: MenuItemCell.identifier)
+        view.register(MenuItemCell.self, forCellReuseIdentifier: MenuItemCell.reuseIdentifier)
         view.separatorStyle = .none
         view.dataSource = self
         view.delegate = self
@@ -278,7 +278,7 @@ extension PlaceMenuView: UITableViewDataSource {
         let section = indexPath.section
         let row = indexPath.row
         
-        let cell = tableView.dequeueReusableCell(withIdentifier: MenuItemCell.identifier, for: indexPath) as? MenuItemCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: MenuItemCell.reuseIdentifier, for: indexPath) as? MenuItemCell
         
         cell?.setup(place?.menu?[section].items[row])
         
