@@ -14,7 +14,7 @@ class OrderManager {
         items.removeValue(forKey: menuItem.name)
     }
     
-    public func qttItems() -> String {
+    public func qtdItens() -> String {
         var count = 0
         
         for item in items.values {

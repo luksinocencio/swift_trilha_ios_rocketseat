@@ -110,7 +110,7 @@ extension ClosedOrderView: UITableViewDataSource {
             
             if let place = place {
                 cell?.setup(with: place,
-                            itemsQtt: OrderManager.shared.qttItems(),
+                            itemsQtt: OrderManager.shared.qtdItens(),
                             total: OrderManager.shared.totalOrder()
                 )
             }

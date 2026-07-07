@@ -179,6 +179,7 @@ extension PlaceMenuView {
         place?.resetSelectedItemsCount()
         OrderManager.shared.clear()
         tableView.reloadData()
+        self.orderDetailsView.setup(items: OrderManager.shared.qtdItens(), total: OrderManager.shared.totalOrder())
     }
 }
 
@@ -294,7 +295,7 @@ extension PlaceMenuView: UITableViewDataSource {
                 currentCell.updateCount(newCount)
             }
             
-            self.orderDetailsView.setup(items: OrderManager.shared.qttItems(),
+            self.orderDetailsView.setup(items: OrderManager.shared.qtdItens(),
                                         total: OrderManager.shared.totalOrder()
             )
         }
@@ -321,7 +322,7 @@ extension PlaceMenuView: UITableViewDataSource {
                 currentCell.updateCount(newCount)
             }
             
-            self.orderDetailsView.setup(items: OrderManager.shared.qttItems(),
+            self.orderDetailsView.setup(items: OrderManager.shared.qtdItens(),
                                         total: OrderManager.shared.totalOrder()
             )
         }

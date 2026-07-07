@@ -50,7 +50,7 @@ extension OpenOrderView {
     func setup(with place: Place?) {
         self.place = place
         tableView.reloadData()
-        self.confirmOrderDetailsView.setup(items: OrderManager.shared.qttItems(),
+        self.confirmOrderDetailsView.setup(items: OrderManager.shared.qtdItens(),
                                            total: OrderManager.shared.totalOrder()
         )
     }
@@ -129,7 +129,7 @@ extension OpenOrderView: UITableViewDataSource {
                 currentCell.updateCount(item.selectedCount)
             }
             
-            self.confirmOrderDetailsView.setup(items: OrderManager.shared.qttItems(),
+            self.confirmOrderDetailsView.setup(items: OrderManager.shared.qtdItens(),
                                                total: OrderManager.shared.totalOrder()
             )
         }
@@ -149,7 +149,7 @@ extension OpenOrderView: UITableViewDataSource {
                 currentCell.updateCount(item.selectedCount)
             }
             
-            self.confirmOrderDetailsView.setup(items: OrderManager.shared.qttItems(),
+            self.confirmOrderDetailsView.setup(items: OrderManager.shared.qtdItens(),
                                                total: OrderManager.shared.totalOrder()
             )
         }
