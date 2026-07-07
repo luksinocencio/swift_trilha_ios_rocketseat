@@ -2,5 +2,5 @@ import Foundation
 
 public protocol PlaceMenuCoordinator: AnyObject {
     func back()
-    func openOrder()
+    func openOrder(place: Place?)
 }

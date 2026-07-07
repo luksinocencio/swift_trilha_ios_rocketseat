@@ -8,6 +8,7 @@ final class OpenOrderView: UIView {
     
     private lazy var tableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .insetGrouped)
+        tableView.register(HeaderOrderCell.self, forCellReuseIdentifier: HeaderOrderCell.reuseIdentifier)
         tableView.separatorStyle = .none
         tableView.dataSource = self
         tableView.delegate = self
@@ -32,6 +33,7 @@ final class OpenOrderView: UIView {
 
 extension OpenOrderView {
     func setup(with place: Place?) {
+        self.place = place
         tableView.reloadData()
     }
 }
@@ -63,6 +65,17 @@ extension OpenOrderView: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
+        if indexPath.section == 0 {
+            let cell = tableView.dequeueReusableCell(withIdentifier: HeaderOrderCell.reuseIdentifier,
+                                                     for: indexPath) as! HeaderOrderCell
+            
+            if let place = self.place {
+                cell.setup(place)
+                return cell
+            }
+        }
+        
         return UITableViewCell()
     }
 }
