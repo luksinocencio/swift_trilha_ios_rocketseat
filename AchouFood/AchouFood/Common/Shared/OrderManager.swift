@@ -32,6 +32,10 @@ class OrderManager {
         return String(format: "R$ %.2f", total)
     }
     
+    public func size() -> Int {
+        return items.count
+    }
+    
     public func clear() {
         items.removeAll()
     }

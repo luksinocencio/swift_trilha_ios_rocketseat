@@ -23,11 +23,19 @@ final class OrderViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         buildLayout()
+        bindActions()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         tabBarController?.tabBar.isHidden = false
+        orderView.setup(with: place)
+    }
+    
+    func bindActions() {
+        orderView.emptyOrderButtonTapped = { [weak self] in
+            self?.coordinator?.openMenu()
+        }
     }
 }
 

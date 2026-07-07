@@ -9,9 +9,12 @@ struct OrderConstants {
     static let placeImageViewSize = 22.0
     static let placeViewRadius = 8.0
     static let placeViewBorderWidth = 1.0
+    static let emptyOrderHeight = 220.0
 }
 
 final class OrderView: UIView {
+    
+    var emptyOrderButtonTapped: (() -> Void)?
     
     private lazy var placeView: UIView = {
         let view = UIView()
@@ -57,13 +60,30 @@ final class OrderView: UIView {
         return view
     }()
     
+    private lazy var emptyOrderView = EmptyOrderView()
+    private lazy var openOrderView = OpenOrderView()
+    private lazy var closedOrderView = ClosedOrderView()
+    
     override init(frame: CGRect) {
         super.init(frame: .zero)
         buildLayout()
+        bindActions()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    private func bindActions() {
+        emptyOrderView.emptyOrderButtonTapped = { [weak self] in
+            self?.emptyOrderButtonTapped?()
+        }
+    }
+}
+
+extension OrderView {
+    func setup(with place: Place?) {
+        openOrderView.setup(with: place)
     }
 }
 
@@ -71,10 +91,11 @@ extension OrderView: ViewCodeProtocol {
     func setViewHierarchy() {
         addSubview(placeView)
         addSubview(textStackView)
-        //        addSubview(titleLabel)
-        //        addSubview(subtitleLabel)
         addSubview(contentView)
         placeView.addSubview(placeImageView)
+        contentView.addSubview(emptyOrderView)
+        contentView.addSubview(closedOrderView)
+        contentView.addSubview(openOrderView)
     }
     
     func setViewConstraints() {
@@ -96,20 +117,24 @@ extension OrderView: ViewCodeProtocol {
             make.trailing.equalToSuperview().inset(Metrics.medium)
         }
         
-        //        titleLabel.snp.makeConstraints { make in
-        //            make.top.equalTo(placeImageView)
-        //            make.leading.equalTo(placeView.snp.trailing).offset(Metrics.small)
-        //            make.trailing.equalToSuperview().inset(Metrics.medium)
-        //        }
-        //
-        //        subtitleLabel.snp.makeConstraints { make in
-        //            make.top.equalTo(titleLabel.snp.bottom)
-        //            make.leading.equalTo(placeView.snp.trailing).offset(Metrics.small)
-        //            make.trailing.equalToSuperview().inset(Metrics.medium)
-        //        }
-        
         contentView.snp.makeConstraints { make in
             make.top.equalTo(placeView.snp.bottom).offset(Metrics.medium)
+            make.leading.trailing.bottom.equalToSuperview()
+        }
+        
+        emptyOrderView.snp.makeConstraints { make in
+            make.top.equalToSuperview().offset(Metrics.medium)
+            make.leading.trailing.equalToSuperview()
+            make.height.equalTo(OrderConstants.emptyOrderHeight)
+        }
+        
+        openOrderView.snp.makeConstraints { make in
+            make.top.equalToSuperview().offset(Metrics.medium)
+            make.leading.trailing.bottom.equalToSuperview()
+        }
+        
+        closedOrderView.snp.makeConstraints { make in
+            make.top.equalToSuperview().offset(Metrics.medium)
             make.leading.trailing.bottom.equalToSuperview()
         }
     }
@@ -125,5 +150,9 @@ extension OrderView: ViewCodeProtocol {
         contentView.layer.cornerRadius = Metrics.medium
         contentView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
         contentView.clipsToBounds = true
+        
+        emptyOrderView.isHidden = true
+        openOrderView.isHidden = false
+        closedOrderView.isHidden = true
     }
 }
